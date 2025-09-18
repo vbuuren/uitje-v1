@@ -3,93 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <title>Uitje – Admin + Detail</title>
-  <link rel="stylesheet" href="style.css">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background: #ececec;
-    }
-
+    body { font-family: Arial, sans-serif; margin: 0; background: #ececec; }
     h1 { margin: 0 0 16px 0; }
-
-    .section {
-      background: #fff;
-      padding: 20px;
-      margin-bottom: 20px;
-      border-radius: 6px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-
+    .section { background: #fff; padding: 20px; margin-bottom: 20px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
     #adminPage { background: #f4f8fb; padding: 30px; }
     #detailPage { background: #fff; padding: 30px; }
-
-    hr.page-sep {
-      margin: 0;
-      border: 0;
-      border-top: 8px solid #ccc;
-    }
-
-    label { display: block; margin-bottom: 10px; }
-
-    input, textarea, button {
-      width: 100%;
-      padding: 8px;
-      margin-top: 4px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 14px;
-    }
-
-    button {
-      background: #0078d4;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover { background: #005a9e; }
-
+    hr.page-sep { margin: 0; border: 0; border-top: 8px solid #ccc; }
     .overview { border: 1px solid #e5e5e5; border-radius: 6px; overflow: hidden; }
-    .overview-item {
-      padding: 10px 12px;
-      border-bottom: 1px solid #eee;
-      background: #fff;
-    }
+    .overview-item { padding: 10px 12px; border-bottom: 1px solid #eee; background: #fff; }
     .overview-item:last-child { border-bottom: none; }
-
     .clickable { cursor: pointer; }
-    .muted { color: #666; font-size: 13px; }
-
-    /* Navigatiebalk */
-    .nav-bar {
-      background: #333;
-      padding: 10px;
-      text-align: center;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-    .nav-bar button {
-      background: #0078d4;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-      margin: 0 5px;
-    }
+    .nav-bar { background: #333; padding: 10px; text-align: center; position: sticky; top: 0; z-index: 10; }
+    .nav-bar button { background: #0078d4; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; margin: 0 5px; }
     .nav-bar button:hover { background: #005a9e; }
-
-    /* Kleine helper voor inputs-lay-out in Admin (alleen visueel) */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-    @media (max-width: 700px) {
-      .grid { grid-template-columns: 1fr; }
-    }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ccc; padding: 6px; text-align: center; }
+    th { background: #f0f0f0; }
   </style>
 </head>
 <body>
@@ -105,106 +35,32 @@
 <div id="adminPage">
   <h1>Beheerpagina</h1>
 
-  <!-- Algemene gegevens -->
-  <div class="section" id="sectAlgemeen">
-    <h2>Algemene gegevens</h2>
-    <label>Titel
-      <input type="text" id="admTitel" value="Dagje Rotterdam">
-    </label>
-    <div class="grid">
-      <label>Datum
-        <input type="date" id="admDatum" value="2025-09-20">
-      </label>
-      <label>Verzamelpunt tijd
-        <input type="time" id="admVerzamelTijd" value="09:30">
-      </label>
-    </div>
-    <label>Verzamelpunt locatie
-      <input type="text" id="admVerzamelLocatie" value="Centraal Station Rotterdam">
-    </label>
-    <label>Algemene notitie
-      <textarea id="admNotitie" rows="2">Let op: Eten en extra's zoals drank, parkeren, souvenirs worden achteraf berekend tenzij de prijs vooraf bekend is.</textarea>
-    </label>
-  </div>
-
-  <!-- Activiteit toevoegen (alleen visueel) -->
-  <div class="section" id="sectActiviteit">
-    <h2>Activiteit toevoegen</h2>
-    <div class="grid">
-      <label>Naam
-        <input type="text" placeholder="Naam activiteit">
-      </label>
-      <label>Prijs p.p.
-        <input type="number" step="0.01" placeholder="Bijv. 12,50">
-      </label>
-      <label>Starttijd
-        <input type="time">
-      </label>
-      <label>Eindtijd
-        <input type="time">
-      </label>
-      <label class="full">URL
-        <input type="url" placeholder="https://...">
-      </label>
-    </div>
-    <div style="margin-top:10px">
-      <button type="button">Opslaan activiteit</button>
-    </div>
-  </div>
-
-  <!-- Overzicht activiteiten (ADMIN) -->
-  <div class="section" id="sectOverzichtActiviteit">
+  <!-- Overzicht activiteiten -->
+  <div class="section">
     <h2>Overzicht activiteiten</h2>
     <div id="adminActiviteiten" class="overview"></div>
-    <p class="muted" style="margin-top:8px">Rijen tonen naam, tijd en prijs met “ | ” en icoontjes. Klikbaar als er een URL is.</p>
   </div>
 
-  <!-- Reizen toevoegen (alleen visueel) -->
-  <div class="section" id="sectReizenAdmin">
-    <h2>Reizen</h2>
-    <div class="grid">
-      <label>Van
-        <input type="text" placeholder="Bijv. Centraal Station">
-      </label>
-      <label>Naar
-        <input type="text" placeholder="Bijv. Haven">
-      </label>
-      <label>Tijd van
-        <input type="time">
-      </label>
-      <label>Tijd tot
-        <input type="time">
-      </label>
-      <label>Afstand (km)
-        <input type="number" step="0.1" placeholder="Bijv. 5">
-      </label>
-      <label>Duur
-        <input type="text" placeholder="Bijv. 15 min">
-      </label>
-      <label class="full">Route-link
-        <input type="url" placeholder="https://maps.google.com/...">
-      </label>
-    </div>
-    <div style="margin-top:10px">
-      <button type="button">Voeg reis toe</button>
-    </div>
-  </div>
-
-  <!-- Overzicht reizen (ADMIN) -->
+  <!-- Overzicht reizen -->
   <div class="section">
     <h2>Overzicht reizen</h2>
     <div id="adminReizen" class="overview"></div>
-    <p class="muted" style="margin-top:8px">Rijen tonen route, tijd, afstand, duur en een klikbare route-link.</p>
   </div>
 
-  <!-- Deelnemers (alleen visueel) -->
-  <div class="section" id="sectDeelnemers">
+  <!-- Deelnemersbeheer -->
+  <div class="section">
     <h2>Deelnemers</h2>
-    <ul>
-      <li>Marcel</li>
-      <li>Petra</li>
-      <li>Jan</li>
-    </ul>
+    <table id="deelnemersTabel">
+      <thead>
+        <tr>
+          <th>Naam</th>
+          <th>Wel mee</th>
+          <th>Geannuleerd</th>
+          <th>Reset annulering</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
   </div>
 </div>
 
@@ -212,82 +68,58 @@
 
 <!-- ===== DETAIL DEEL ===== -->
 <div id="detailPage">
-  <h1>Detailpagina</h1>
+  <h1>Detailpagina (voorbeeld frontend)</h1>
 
-  <!-- Verzamelpunt -->
-  <div class="section">
-    <h2>Verzamelpunt & Tijd</h2>
-    <p id="detailVerzamelPunt">Centraal Station Rotterdam</p>
-    <p id="detailVerzamelTijd">09:30</p>
-    <p><a id="detailLocatieLink" href="#" target="_blank">📍 Bekijk locatie in Google Maps</a></p>
-  </div>
-
-  <!-- Activiteiten (DETAIL) -->
+  <!-- Activiteiten -->
   <div class="section">
     <h2>Wat we gaan doen</h2>
     <div id="detailActiviteiten" class="overview"></div>
   </div>
 
-  <!-- Reizen (DETAIL) -->
+  <!-- Reizen -->
   <div class="section">
     <h2>Reizen</h2>
     <div id="detailReizen" class="overview"></div>
   </div>
 
-  <!-- Volledige route-link -->
-  <div class="section">
-    <p><a id="detailRoute" href="#" target="_blank">📍 Bekijk volledige route in Google Maps</a></p>
-  </div>
-
-  <!-- Standaardnotitie -->
-  <div class="section">
-    <p id="ondersteNotitie">Let op: Eten en extra's zoals drank, parkeren, souvenirs worden achteraf berekend tenzij de prijs vooraf bekend is.</p>
-  </div>
-
-  <!-- Deelnemers (DETAIL) -->
+  <!-- Overzicht deelnemers -->
   <div class="section">
     <h2>Wie gaan er mee</h2>
-    <ul>
-      <li>Marcel</li>
-      <li>Petra</li>
-      <li>Jan</li>
-    </ul>
+    <ul id="overzichtMee"></ul>
+  </div>
+
+  <!-- Mijn status -->
+  <div class="section">
+    <h2>Mijn status</h2>
+    <div id="mijnStatus"></div>
   </div>
 </div>
 
 <script>
-  // Dummy-data die zowel Admin- als Detail-overzichten voedt
+  // Dummy-data
   const activiteiten = [
     { naam: 'Rondvaart door de haven', start: '10:00', eind: '11:30', prijs: 15, url: 'https://voorbeeld.nl/rondvaart' },
-    { naam: 'Bezoek Euromast', start: '12:00', eind: '13:00', prijs: 10, url: 'https://voorbeeld.nl/euromast' },
-    { naam: 'Markthal pauze', start: '13:15', eind: '14:00', prijs: 0, url: '' }
+    { naam: 'Bezoek Euromast', start: '12:00', eind: '13:00', prijs: 10, url: 'https://voorbeeld.nl/euromast' }
   ];
-
   const reizen = [
-    { van: 'Centraal Station', naar: 'Haven', tijdVan: '09:30', tijdTot: '10:00', afstand: 5, duur: '15 min', link: 'https://maps.google.com/?q=Rotterdam' },
-    { van: 'Haven', naar: 'Euromast', tijdVan: '11:30', tijdTot: '12:00', afstand: 3, duur: '10 min', link: 'https://maps.google.com/?q=Euromast' }
+    { van: 'Centraal Station', naar: 'Haven', tijdVan: '09:30', tijdTot: '10:00', afstand: 5, duur: '15 min', link: 'https://maps.google.com' }
   ];
+  let deelnemers = [
+    { naam: 'Marcel', welMee: false, geannuleerd: false },
+    { naam: 'Petra', welMee: true, geannuleerd: false },
+    { naam: 'Jan', welMee: false, geannuleerd: true }
+  ];
+  const ingelogdeNaam = 'Marcel';
 
-  // Helpers
-  function euroBedrag(n) {
-    const v = Number(n || 0);
-    return v.toFixed(2).replace('.', ',');
-  }
+  function euroBedrag(n) { return Number(n||0).toFixed(2).replace('.', ','); }
 
-  // 1) ACTIVITEITEN – ADMIN OVERZICHT
-  function renderActiviteitenAdmin(list) {
-    const el = document.getElementById('adminActiviteiten');
+  function renderActiviteiten(el, list) {
     el.innerHTML = '';
-    if (!list || !list.length) {
-      el.innerHTML = '<div class="overview-item">Nog geen activiteiten toegevoegd.</div>';
-      return;
-    }
-    // sorteer op starttijd (optioneel)
-    list.slice().sort((a,b) => (a.start||'').localeCompare(b.start||'')).forEach(act => {
-      const seg = [];
-      seg.push(`🏁 ${act.naam}`);
-      if (act.start || act.eind) seg.push(`🕒 ${(act.start||'')}${(act.start && act.eind) ? ' - ' : ''}${(act.eind||'')}`);
-      if (act.prijs && Number(act.prijs) > 0) seg.push(`💶 € ${euroBedrag(act.prijs)} p.p.`);
+    if (!list.length) { el.innerHTML = '<div class="overview-item">Geen activiteiten</div>'; return; }
+    list.forEach(act => {
+      const seg = [`🏁 ${act.naam}`];
+      if (act.start || act.eind) seg.push(`🕒 ${act.start||''}${(act.start&&act.eind)?' - ':''}${act.eind||''}`);
+      if (act.prijs) seg.push(`💶 € ${euroBedrag(act.prijs)} p.p.`);
       if (act.url) seg.push('🔗 Link');
       const row = document.createElement('div');
       row.className = 'overview-item' + (act.url ? ' clickable' : '');
@@ -297,41 +129,14 @@
     });
   }
 
-  // 2) ACTIVITEITEN – DETAIL OVERZICHT
-  function renderActiviteitenDetail(list) {
-    const el = document.getElementById('detailActiviteiten');
+  function renderReizen(el, list) {
     el.innerHTML = '';
-    if (!list || !list.length) {
-      el.innerHTML = '<div class="overview-item">Nog geen activiteiten toegevoegd.</div>';
-      return;
-    }
-    list.slice().sort((a,b) => (a.start||'').localeCompare(b.start||'')).forEach(act => {
-      const seg = [];
-      seg.push(`🏁 ${act.naam}`);
-      if (act.start || act.eind) seg.push(`🕒 ${(act.start||'')}${(act.start && act.eind) ? ' - ' : ''}${(act.eind||'')}`);
-      if (act.prijs && Number(act.prijs) > 0) seg.push(`💶 € ${euroBedrag(act.prijs)} p.p.`);
-      if (act.url) seg.push('🔗 Link');
-      const row = document.createElement('div');
-      row.className = 'overview-item' + (act.url ? ' clickable' : '');
-      row.innerHTML = seg.join(' | ');
-      if (act.url) row.addEventListener('click', () => window.open(act.url, '_blank'));
-      el.appendChild(row);
-    });
-  }
-
-  // 3) REIZEN – ADMIN OVERZICHT
-  function renderReizenAdmin(list) {
-    const el = document.getElementById('adminReizen');
-    el.innerHTML = '';
-    if (!list || !list.length) {
-      el.innerHTML = '<div class="overview-item">Nog geen reizen toegevoegd.</div>';
-      return;
-    }
-    list.slice().sort((a,b) => (a.tijdVan||'').localeCompare(b.tijdVan||'')).forEach(r => {
+    if (!list.length) { el.innerHTML = '<div class="overview-item">Geen reizen</div>'; return; }
+    list.forEach(r => {
       const seg = [];
       const route = [r.van, r.naar].filter(Boolean).join(' → ');
       if (route) seg.push(`🚗 ${route}`);
-      if (r.tijdVan || r.tijdTot) seg.push(`🕒 ${(r.tijdVan||'')}${(r.tijdVan && r.tijdTot) ? ' - ' : ''}${(r.tijdTot||'')}`);
+      if (r.tijdVan || r.tijdTot) seg.push(`🕒 ${r.tijdVan||''}${(r.tijdVan&&r.tijdTot)?' - ':''}${r.tijdTot||''}`);
       if (r.afstand) seg.push(`📏 ${String(r.afstand).replace('.', ',')} km`);
       if (r.duur) seg.push(`⏱️ ${r.duur}`);
       if (r.link) seg.push(`<a href="${r.link}" target="_blank">🔗 Route</a>`);
@@ -342,30 +147,94 @@
     });
   }
 
-  // 4) REIZEN – DETAIL OVERZICHT
-  function renderReizenDetail(list) {
-    const el = document.getElementById('detailReizen');
-    el.innerHTML = '';
-    if (!list || !list.length) {
-      el.innerHTML = '<div class="overview-item">Nog geen reizen toegevoegd.</div>';
-      return;
-    }
-    list.slice().sort((a,b) => (a.tijdVan||'').localeCompare(b.tijdVan||'')).forEach(r => {
-      const seg = [];
-      const route = [r.van, r.naar].filter(Boolean).join(' → ');
-      if (route) seg.push(`🚗 ${route}`);
-      if (r.tijdVan || r.tijdTot) seg.push(`🕒 ${(r.tijdVan||'')}${(r.tijdVan && r.tijdTot) ? ' - ' : ''}${(r.tijdTot||'')}`);
-      if (r.afstand) seg.push(`📏 ${String(r.afstand).replace('.', ',')} km`);
-      if (r.duur) seg.push(`⏱️ ${r.duur}`);
-      if (r.link) seg.push(`<a href="${r.link}" target="_blank">🔗 Route</a>`);
-      const row = document.createElement('div');
-      row.className = 'overview-item';
-      row.innerHTML = seg.join(' | ');
-      el.appendChild(row);
+  function renderDeelnemersAdmin() {
+    const tbody = document.querySelector('#deelnemersTabel tbody');
+    tbody.innerHTML = '';
+    deelnemers.forEach((d, idx) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${d.naam}</td>
+        <td><input type="checkbox" ${d.welMee?'checked':''}></td>
+        <td><input type="checkbox" ${d.geannuleerd?'checked':''} disabled></td>
+        <td><button>Reset</button></td>
+      `;
+      // Wel mee toggle
+      tr.children[1].firstChild.addEventListener('change', e => {
+        d.welMee = e.target.checked;
+        if (d.welMee) d.geannuleerd = false;
+        renderDeelnemersAdmin(); renderOverzichtFrontend(); renderDeelnemerFrontend();
+      });
+      // Reset knop
+      tr.children[3].firstChild.addEventListener('click', () => {
+        d.geannuleerd = false; d.welMee = false;
+        renderDeelnemersAdmin(); renderOverzichtFrontend(); renderDeeln
+              tr.children[3].firstChild.addEventListener('click', () => {
+        d.geannuleerd = false;
+        d.welMee = false;
+        renderDeelnemersAdmin();
+        renderOverzichtFrontend();
+        renderDeelnemerFrontend();
+      });
+
+      tbody.appendChild(tr);
     });
   }
 
-  // 5) Navigatie (schakelen tussen Admin/Detail)
+  // Frontend: overzicht van alleen wel‑mee en niet‑geannuleerd
+  function renderOverzichtFrontend() {
+    const lijst = document.getElementById('overzichtMee');
+    lijst.innerHTML = '';
+    deelnemers
+      .filter(d => d.welMee && !d.geannuleerd)
+      .forEach(d => {
+        const li = document.createElement('li');
+        li.textContent = d.naam;
+        lijst.appendChild(li);
+      });
+  }
+
+  // Frontend: status van ingelogde deelnemer
+  function renderDeelnemerFrontend() {
+    const container = document.getElementById('mijnStatus');
+    container.innerHTML = '';
+    const deelnemer = deelnemers.find(d => d.naam === ingelogdeNaam);
+    if (!deelnemer) {
+      container.textContent = 'Onbekende deelnemer.';
+      return;
+    }
+
+    if (deelnemer.geannuleerd) {
+      container.textContent = 'Je hebt geannuleerd. Neem contact op met de organisator voor herstel.';
+      return;
+    }
+
+    if (deelnemer.welMee) {
+      container.textContent = 'Je staat op: Wel mee';
+      const btnAnnuleer = document.createElement('button');
+      btnAnnuleer.textContent = 'Annuleer deelname';
+      btnAnnuleer.addEventListener('click', () => {
+        deelnemer.geannuleerd = true;
+        deelnemer.welMee = false;
+        renderDeelnemerFrontend();
+        renderOverzichtFrontend();
+        renderDeelnemersAdmin();
+      });
+      container.appendChild(document.createElement('br'));
+      container.appendChild(btnAnnuleer);
+    } else {
+      const btnMee = document.createElement('button');
+      btnMee.textContent = 'Ik ga mee';
+      btnMee.addEventListener('click', () => {
+        deelnemer.welMee = true;
+        renderDeelnemerFrontend();
+        renderOverzichtFrontend();
+        renderDeelnemersAdmin();
+      });
+      container.appendChild(btnMee);
+    }
+  }
+
+  // Navigatie tussen Admin/Detail
   const adminPage = document.getElementById('adminPage');
   const detailPage = document.getElementById('detailPage');
   const pageSep = document.querySelector('.page-sep');
@@ -390,12 +259,15 @@
   document.getElementById('showDetail').addEventListener('click', showDetailPage);
   document.getElementById('showBoth').addEventListener('click', showBothPages);
 
-  // 6) Init: render alle overzichten en start met Admin zichtbaar
+  // Init: render alles en start met Admin zichtbaar
   function init() {
-    renderActiviteitenAdmin(activiteiten);
-    renderActiviteitenDetail(activiteiten);
-    renderReizenAdmin(reizen);
-    renderReizenDetail(reizen);
+    renderActiviteiten(document.getElementById('adminActiviteiten'), activiteiten);
+    renderActiviteiten(document.getElementById('detailActiviteiten'), activiteiten);
+    renderReizen(document.getElementById('adminReizen'), reizen);
+    renderReizen(document.getElementById('detailReizen'), reizen);
+    renderDeelnemersAdmin();
+    renderOverzichtFrontend();
+    renderDeelnemerFrontend();
     showAdminPage();
   }
   document.addEventListener('DOMContentLoaded', init);
