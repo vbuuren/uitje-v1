@@ -243,11 +243,17 @@ body{font-family:'Roboto Mono', monospace;background:var(--bg);padding:18px;disp
   <div id="detailActiviteiten"></div>
 </div>
 
+<!-- Reizen -->
+<div class="section" id="sectReizen">
+  <h2><img class="icon" src="https://img.icons8.com/ios-glyphs/30/000000/car.png" alt="car"/> Reizen</h2>
+  <div id="detailReizen"></div>
+</div>
 
 <!-- Google Maps route onder evenementen -->
 <div class="section">
   <p><a id="detailRoute" class="map-link" target="_blank">📍 Bekijk volledige route in Google Maps</a></p>
 </div>
+
 
 <!-- Deelnemers -->
 <div class="section">
@@ -290,6 +296,11 @@ function addActiviteit(){
   const woon=document.getElementById('actWoonplaats').value;
   const tel=document.getElementById('actTelefoon').value;
   const id=Date.now();
+  const url = document.getElementById('activiteitUrl').value.trim();
+activiteiten.push({
+  naam, start, eind, prijs: parseFloat(prijs) || 0, url
+});
+
   const act={id,naam,prijs,start,eind,notitie,adres,postcode,woon,tel};
   activiteiten.push(act);
   renderOverzicht();
@@ -444,6 +455,7 @@ function updateLocatiesDatalist() {
 
 </body>
 </html>
+
 
 
 
