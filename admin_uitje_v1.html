@@ -53,9 +53,8 @@
         <tr>
           <th>Naam</th>
           <th>Wel mee</th>
+          <th>Niet mee</th>
           <th>Geannuleerd</th>
-          <th>Reset</th>
-          <th>Verplaats</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -144,7 +143,7 @@ function renderReizen(el, list) {
 function renderDeelnemersAdmin() {
   const tbody = document.querySelector('#deelnemersTabel tbody');
   tbody.innerHTML = '';
-  deelnemers.forEach((d, idx) => {
+  deelnemers.forEach(d => {
     const tr = document.createElement('tr');
     if (d.welMee) tr.classList.add('welmee');
     if (d.geannuleerd) tr.classList.add('geannuleerd');
@@ -161,60 +160,42 @@ function renderDeelnemersAdmin() {
     chkWel.checked = d.welMee;
     chkWel.addEventListener('change', e => {
       d.welMee = e.target.checked;
-      if (d.welMee) d.geannuleerd = false;
+      if (d.welMee) { d.geannuleerd = false; }
       renderAll();
     });
     tdWel.appendChild(chkWel);
     tr.appendChild(tdWel);
+
+    // Niet mee
+    const tdNiet = document.createElement('td');
+    const chkNiet = document.createElement('input');
+    chkNiet.type = 'checkbox';
+    chkNiet.checked = !d.welMee && !d.geannuleerd;
+    chkNiet.addEventListener('change', e => {
+      if (e.target.checked) {
+        d.welMee = false;
+        d.geannuleerd = false;
+        renderAll();
+      }
+    });
+    tdNiet.appendChild(chkNiet);
+    tr.appendChild(tdNiet);
 
     // Geannuleerd
     const tdAnn = document.createElement('td');
     const chkAnn = document.createElement('input');
     chkAnn.type = 'checkbox';
     chkAnn.checked = d.geannuleerd;
-    chkAnn.disabled = true; // alleen admin via reset kan dit uitzetten
-    tdAnn.appendChild(chkAnn);
-    tr.appendChild(tdAnn);
-
-    // Reset knop
-    const tdReset = document.createElement('td');
-    const btnReset = document.createElement('button');
-    btnReset.textContent = 'Reset';
-    btnReset.addEventListener('click', () => {
-      d.geannuleerd = false;
-      d.welMee = false;
+    chkAnn.addEventListener('change', e => {
+      // Alleen admin kan vrijgeven of annuleren
+      d.geannuleerd = e.target.checked;
+      if (d.geannuleerd) {
+        d.welMee = false;
+      }
       renderAll();
     });
-    tdReset.appendChild(btnReset);
-    tr.appendChild(tdReset);
-
-    // Verplaatsknoppen
-    const tdMove = document.createElement('td');
-    const btnUp = document.createElement('button');
-    btnUp.textContent = '↑';
-    btnUp.disabled = idx === 0;
-    btnUp.addEventListener('click', () => {
-      if (idx > 0) {
-        const temp = deelnemers[idx];
-        deelnemers[idx] = deelnemers[idx - 1];
-        deelnemers[idx - 1] = temp;
-        renderAll();
-      }
-    });
-    const btnDown = document.createElement('button');
-    btnDown.textContent = '↓';
-    btnDown.disabled = idx === deelnemers.length - 1;
-    btnDown.addEventListener('click', () => {
-      if (idx < deelnemers.length - 1) {
-        const temp = deelnemers[idx];
-        deelnemers[idx] = deelnemers[idx + 1];
-        deelnemers[idx + 1] = temp;
-        renderAll();
-      }
-    });
-    tdMove.appendChild(btnUp);
-    tdMove.appendChild(btnDown);
-    tr.appendChild(tdMove);
+    tdAnn.appendChild(chkAnn);
+    tr.appendChild(tdAnn);
 
     tbody.appendChild(tr);
   });
@@ -264,6 +245,7 @@ function renderDeelnemerFrontend() {
     btnMee.textContent = 'Ik ga mee';
     btnMee.addEventListener('click', () => {
       deelnemer.welMee = true;
+      deelnemer.geannuleerd = false;
       renderAll();
     });
     container.appendChild(btnMee);
