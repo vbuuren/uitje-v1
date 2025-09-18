@@ -6,17 +6,16 @@
 <style>
   body { font-family: Arial, sans-serif; margin: 0; background: #ececec; }
   h1 { margin: 0 0 16px 0; }
+  fieldset { margin-bottom: 20px; border-radius: 6px; border: 1px solid #ccc; padding: 15px; background: #fff; }
+  legend { font-weight: bold; }
+  label { display: block; margin: 5px 0; }
+  input, textarea { width: 100%; padding: 4px; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .row label { flex: 1; }
   .section { background: #fff; padding: 20px; margin-bottom: 20px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-  #adminPage { background: #f4f8fb; padding: 30px; }
-  #detailPage { background: #fff; padding: 30px; }
-  hr.page-sep { margin: 0; border: 0; border-top: 8px solid #ccc; }
   .overview { border: 1px solid #e5e5e5; border-radius: 6px; overflow: hidden; }
   .overview-item { padding: 10px 12px; border-bottom: 1px solid #eee; background: #fff; display:flex; justify-content:space-between; align-items:center; }
   .overview-item:last-child { border-bottom: none; }
-  .clickable { cursor: pointer; }
-  .nav-bar { background: #333; padding: 10px; text-align: center; position: sticky; top: 0; z-index: 10; }
-  .nav-bar button { background: #0078d4; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; margin: 0 5px; }
-  .nav-bar button:hover { background: #005a9e; }
   table { border-collapse: collapse; width: 100%; }
   th, td { border: 1px solid #ccc; padding: 6px; text-align: center; }
   th { background: #f0f0f0; }
@@ -26,6 +25,9 @@
   .status-stempel { font-size: 1.5em; font-weight: bold; padding: 10px; border: 3px solid; display: inline-block; margin-top: 10px; }
   .status-groen { color: green; border-color: green; }
   .status-rood { color: red; border-color: red; }
+  .nav-bar { background: #333; padding: 10px; text-align: center; position: sticky; top: 0; z-index: 10; }
+  .nav-bar button { background: #0078d4; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; margin: 0 5px; }
+  .nav-bar button:hover { background: #005a9e; }
 </style>
 </head>
 <body>
@@ -38,69 +40,78 @@
 
 <!-- ADMIN -->
 <div id="adminPage">
-  <h1>Admin – Uitje Aanmaken <label><input type="checkbox" checked> Actief</label></h1>
+  <h1>Admin – Uitje Aanmaken <label><input type="checkbox" id="actief" checked> Actief</label></h1>
 
-  <!-- Algemeen -->
-  <div class="section">
-    <h2>Algemeen</h2>
-    <label>Titel uitje <input type="text" id="admTitel" value="Dagje Rotterdam"></label>
-    <label>Datum uitje <input type="date" id="admDatum" value="2025-09-20"></label>
-    <label>Inschrijven tot <input type="date" id="admInschrijvenTot" value="2025-09-10"></label>
-    <label>Annuleren tot <input type="date" id="admAnnulerenTot" value="2025-09-15"></label>
+  <fieldset>
+    <legend>Algemeen</legend>
+    <div class="row">
+      <label>Titel uitje <input type="text" id="admTitel" value="Dagje Rotterdam"></label>
+      <label>Datum uitje <input type="date" id="admDatum" value="2025-09-20"></label>
+      <label>Inschrijven tot <input type="date" id="admInschrijvenTot" value="2025-09-10"></label>
+      <label>Annuleren tot <input type="date" id="admAnnulerenTot" value="2025-09-15"></label>
+    </div>
     <label>Google Maps link verzamelpunt <input type="url" id="admMapsLink"></label>
     <label>Algemene notitie <textarea id="admNotitie">Let op: Eten en extra's zoals drank, parkeren, souvenirs worden achteraf berekend tenzij de prijs vooraf bekend is.</textarea></label>
     <button>Opslaan</button>
-  </div>
+  </fieldset>
 
-  <!-- Verzamelpunt -->
-  <div class="section">
-    <h2>Verzamelpunt</h2>
-    <label>Verzamelplaats <input type="text" id="admVerzamelLocatie" value="Centraal Station Rotterdam"></label>
-    <label>Verzameltijd <input type="time" id="admVerzamelTijd" value="09:30"></label>
-    <label>Straat / Huisnummer <input type="text"></label>
-    <label>Postcode <input type="text"></label>
-    <label>Woonplaats <input type="text"></label>
-    <label>Telefoon <input type="tel"></label>
+  <fieldset>
+    <legend>Verzamelpunt</legend>
+    <div class="row">
+      <label>Verzamelplaats <input type="text" id="admVerzamelLocatie" value="Centraal Station Rotterdam"></label>
+      <label>Verzameltijd <input type="time" id="admVerzamelTijd" value="09:30"></label>
+    </div>
+    <div class="row">
+      <label>Straat / Huisnummer <input type="text"></label>
+      <label>Postcode <input type="text"></label>
+      <label>Woonplaats <input type="text"></label>
+      <label>Telefoon <input type="tel"></label>
+    </div>
     <button>Opslaan</button>
-  </div>
+  </fieldset>
 
-  <!-- Activiteit -->
-  <div class="section">
-    <h2>Activiteit aanmaken / bewerken</h2>
-    <input type="text" id="evtNaam" placeholder="Naam activiteit">
-    <input type="time" id="evtStart">
-    <input type="time" id="evtEind">
-    <input type="number" id="evtPrijs" placeholder="Prijs p.p.">
+  <fieldset>
+    <legend>Activiteit aanmaken / bewerken</legend>
+    <label>Naam activiteit <input type="text" id="evtNaam"></label>
+    <div class="row">
+      <label>Straat / Huisnummer <input type="text"></label>
+      <label>Postcode <input type="text"></label>
+      <label>Woonplaats <input type="text"></label>
+      <label>Telefoon <input type="tel"></label>
+    </div>
+    <div class="row">
+      <label>Starttijd <input type="time" id="evtStart"></label>
+      <label>Eindtijd <input type="time" id="evtEind"></label>
+      <label>Prijs (€) <input type="number" step="0.01" id="evtPrijs"></label>
+    </div>
+    <label>Notitie (optioneel) <textarea id="evtNotitie"></textarea></label>
     <input type="url" id="evtUrl" placeholder="https://...">
-    <textarea id="evtNotitie" placeholder="Notitie (optioneel)"></textarea>
     <button onclick="addEvent()">Opslaan</button>
-  </div>
-  <div class="section">
-    <h2>Overzicht activiteiten</h2>
+    <h4>Overzicht activiteiten</h4>
     <div id="adminActiviteiten" class="overview"></div>
-  </div>
+  </fieldset>
 
-  <!-- Reis -->
-  <div class="section">
-    <h2>Reis aanmaken / bewerken</h2>
-    <input type="text" id="reisVan" placeholder="Van">
-    <input type="time" id="reisStart">
-    <input type="number" id="reisAfstand" placeholder="Afstand (km)">
-    <input type="text" id="reisNaar" placeholder="Naar">
-    <input type="time" id="reisEind">
-    <input type="text" id="reisDuur" placeholder="Duur">
-    <textarea id="reisNotitie" placeholder="Notitie (optioneel)"></textarea>
+  <fieldset>
+    <legend>Reis aanmaken / bewerken</legend>
+    <div class="row">
+      <label>Van <input type="text" id="reisVan"></label>
+      <label>Tijd van <input type="time" id="reisStart"></label>
+      <label>Afstand (km) <input type="number" step="0.1" id="reisAfstand"></label>
+    </div>
+    <div class="row">
+      <label>Naar <input type="text" id="reisNaar"></label>
+      <label>Tijd tot <input type="time" id="reisEind"></label>
+      <label>Duur <input type="text" id="reisDuur"></label>
+    </div>
+    <label>Notitie (optioneel) <textarea id="reisNotitie"></textarea></label>
     <input type="url" id="reisLink" placeholder="https://...">
     <button onclick="addReis()">Opslaan</button>
-  </div>
-  <div class="section">
-    <h2>Overzicht reizen</h2>
+    <h4>Overzicht reizen</h4>
     <div id="adminReizen" class="overview"></div>
-  </div>
+  </fieldset>
 
-  <!-- Deelnemers -->
-  <div class="section">
-    <h2>Deelnemers</h2>
+  <fieldset>
+    <legend>Deelnemers</legend>
     <table id="deelnemersTabel">
       <thead>
         <tr>
@@ -112,18 +123,20 @@
       </thead>
       <tbody></tbody>
     </table>
-  </div>
+  </fieldset>
 </div>
 
 <hr class="page-sep">
 
 <!-- DETAIL -->
 <div id="detailPage">
-  <h1 id="detailTitel">Dagje Rotterdam</h1>
-  <p>Inschrijven tot: <span id="detailInschrijvenTot"></span><br>Annuleren tot: <span id="detailAnnulerenTot"></span></p>
+  <h1 id="detailTitel"></h1>
+  <p>Inschrijven tot: <span id="detailInschrijvenTot"></span><br>
+     Annuleren tot: <span id="detailAnnulerenTot"></span></p>
 
   <h2>Verzamelpunt & Tijd</h2>
-  <p>Locatie: <span id="detailLocatie"></span><br>Tijd: <span id="detailTijd"></span></p>
+  <p>Locatie: <span id="detailLocatie').textContent = document.getElementById('admVerzamelLocatie').value;
+  document.getElementById('detailTijd').textContent = document.getElementById('admVerzamelTijd').value;
 
   <h2>Wat we gaan doen</h2>
   <div id="detailPlanning" class="overview"></div>
@@ -132,7 +145,7 @@
   <ul id="overzichtMee"></ul>
 
   <h3>Totaal te betalen</h3>
-  <p>€ 0,00 p.p.</p>
+  <p id="detailTotaal">€ 0,00 p.p.</p>
 
   <p><strong>Let op:</strong> <span id="detailNotitie"></span></p>
 
@@ -140,7 +153,7 @@
 </div>
 
 <script>
-// Data
+// --- Data ---
 let activiteiten = [
   { naam: 'Rondvaart door de haven', start: '10:00', eind: '11:30', prijs: 16, url: 'https://voorbeeld.nl/rondvaart', type:'event' },
   { naam: 'Bezoek Euromast', start: '12:00', eind: '13:00', prijs: 10, url: 'https://voorbeeld.nl/euromast', type:'event' }
@@ -155,8 +168,10 @@ let deelnemers = [
 ];
 const ingelogdeNaam = 'Marcel';
 
+// --- Hulpfuncties ---
 function euroBedrag(n) { return Number(n||0).toFixed(2).replace('.', ','); }
 
+// Toevoegen activiteiten/reizen
 function addEvent(){
   const naam = document.getElementById('evtNaam').value;
   if(!naam) return;
@@ -171,7 +186,6 @@ function addEvent(){
   });
   renderAll();
 }
-
 function addReis(){
   const van = document.getElementById('reisVan').value;
   const naar = document.getElementById('reisNaar').value;
@@ -189,6 +203,7 @@ function addReis(){
   renderAll();
 }
 
+// Overzichten Admin
 function renderAdminList(el, list, type){
   el.innerHTML = '';
   list.forEach((item, idx) => {
@@ -245,6 +260,7 @@ function renderAdminList(el, list, type){
   });
 }
 
+// Deelnemersbeheer
 function renderDeelnemersAdmin(){
   const tbody = document.querySelector('#deelnemersTabel tbody');
   tbody.innerHTML = '';
@@ -299,6 +315,7 @@ function renderDeelnemersAdmin(){
   });
 }
 
+// Frontend
 function renderOverzichtFrontend(){
   const lijst = document.getElementById('overzichtMee');
   lijst.innerHTML = '';
@@ -309,7 +326,6 @@ function renderOverzichtFrontend(){
       lijst.appendChild(li);
     });
 }
-
 function renderDeelnemerFrontend(){
   const container = document.getElementById('mijnStatus');
   container.innerHTML = '';
@@ -322,21 +338,7 @@ function renderDeelnemerFrontend(){
     statusDiv.classList.add('status-rood');
     container.appendChild(statusDiv);
     return;
-  }
-  if(deelnemer.welMee){
-    statusDiv.textContent = 'GAAT MEE';
-    statusDiv.classList.add('status-groen');
-    container.appendChild(statusDiv);
-    const btnAnnuleer = document.createElement('button');
-    btnAnnuleer.textContent = 'Annuleer deelname';
-    btnAnnuleer.onclick = () => { deelnemer.geannuleerd = true; deelnemer.welMee = false; renderAll(); };
-    container.appendChild(document.createElement('br'));
-    container.appendChild(btnAnnuleer);
-  } else {
-    statusDiv.textContent = 'GAAT NIET MEE';
-    statusDiv.classList.add('status-rood');
-    container.appendChild(statusDiv);
-        const btnMee = document.createElement('button');
+    const btnMee = document.createElement('button');
     btnMee.textContent = 'Ik ga mee';
     btnMee.onclick = () => { 
       deelnemer.welMee = true; 
@@ -374,6 +376,7 @@ function renderDetailPlanning(){
   });
 }
 
+// Navigatie
 const adminPage = document.getElementById('adminPage');
 const detailPage = document.getElementById('detailPage');
 const pageSep = document.querySelector('.page-sep');
@@ -398,12 +401,11 @@ document.getElementById('showAdmin').addEventListener('click', showAdminPage);
 document.getElementById('showDetail').addEventListener('click', showDetailPage);
 document.getElementById('showBoth').addEventListener('click', showBothPages);
 
+// Alles renderen
 function renderAll(){
-  // Admin‑overzichten
   renderAdminList(document.getElementById('adminActiviteiten'), activiteiten, 'event');
   renderAdminList(document.getElementById('adminReizen'), reizen, 'reis');
   renderDeelnemersAdmin();
-  // Detailpagina
   document.getElementById('detailTitel').textContent = document.getElementById('admTitel').value;
   document.getElementById('detailInschrijvenTot').textContent = document.getElementById('admInschrijvenTot').value;
   document.getElementById('detailAnnulerenTot').textContent = document.getElementById('admAnnulerenTot').value;
