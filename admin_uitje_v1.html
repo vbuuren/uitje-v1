@@ -191,6 +191,55 @@ body{font-family:'Roboto Mono', monospace;background:var(--bg);padding:18px;disp
   <div id="detailActiviteiten"></div>
 </div>
 
+<!-- Reizen -->
+<div class="section" id="sectReizen">
+  <h2><img class="icon" src="https://img.icons8.com/ios-glyphs/30/000000/car.png" alt="car"/> Reizen</h2>
+  <div class="row">
+    <div class="half">
+      <label class="smalltext">Van<br>
+        <input list="locaties" id="reisVan" class="input" placeholder="Kies of typ locatie">
+      </label>
+    </div>
+    <div class="half">
+      <label class="smalltext">Naar<br>
+        <input list="locaties" id="reisNaar" class="input" placeholder="Kies of typ locatie">
+      </label>
+    </div>
+    <div class="half">
+      <label class="smalltext">Tijd van<br>
+        <input type="time" id="reisTijdVan" class="input smalltime">
+      </label>
+    </div>
+    <div class="half">
+      <label class="smalltext">Tijd tot<br>
+        <input type="time" id="reisTijdTot" class="input smalltime">
+      </label>
+    </div>
+    <div class="half">
+      <label class="smalltext">Afstand (km)<br>
+        <input type="number" id="reisAfstand" class="input small" step="0.1" min="0">
+      </label>
+    </div>
+    <div class="half">
+      <label class="smalltext">Duur<br>
+        <input type="text" id="reisDuur" class="input small" placeholder="bijv. 00:30">
+      </label>
+    </div>
+    <div class="full">
+      <label class="smalltext">Google route link<br>
+        <input type="url" id="reisRouteLink" class="input" placeholder="https://...">
+      </label>
+    </div>
+  </div>
+  <div style="display:flex;justify-content:flex-end;gap:8px">
+    <button class="btn" id="addReisBtn" type="button">Voeg reis toe</button>
+  </div>
+  <datalist id="locaties"></datalist>
+  <div class="overview" id="overzichtReizen">
+    <div class="overview-empty">Nog geen reizen toegevoegd.</div>
+  </div>
+</div>
+
 <!-- Google Maps route onder evenementen -->
 <div class="section">
   <p><a id="detailRoute" class="map-link" target="_blank">📍 Bekijk volledige route in Google Maps</a></p>
@@ -362,5 +411,6 @@ updateDetail();
 
 </body>
 </html>
+
 
 
