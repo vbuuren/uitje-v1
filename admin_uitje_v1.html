@@ -38,51 +38,60 @@
 
 <!-- ADMIN -->
 <div id="adminPage">
-  <h1>Beheerpagina</h1>
+  <h1>Admin – Uitje Aanmaken <label><input type="checkbox" checked> Actief</label></h1>
 
   <!-- Algemeen -->
   <div class="section">
-    <h2>Algemene gegevens</h2>
-    <label>Titel: <input type="text" id="admTitel" value="Dagje Rotterdam"></label><br>
-    <label>Datum: <input type="date" id="admDatum" value="2025-09-20"></label><br>
-    <label>Algemene notitie:<br>
-      <textarea id="admNotitie" rows="2">Let op: Eten en extra's zoals drank, parkeren, souvenirs worden achteraf berekend tenzij de prijs vooraf bekend is.</textarea>
-    </label>
+    <h2>Algemeen</h2>
+    <label>Titel uitje <input type="text" id="admTitel" value="Dagje Rotterdam"></label>
+    <label>Datum uitje <input type="date" id="admDatum" value="2025-09-20"></label>
+    <label>Inschrijven tot <input type="date" id="admInschrijvenTot" value="2025-09-10"></label>
+    <label>Annuleren tot <input type="date" id="admAnnulerenTot" value="2025-09-15"></label>
+    <label>Google Maps link verzamelpunt <input type="url" id="admMapsLink"></label>
+    <label>Algemene notitie <textarea id="admNotitie">Let op: Eten en extra's zoals drank, parkeren, souvenirs worden achteraf berekend tenzij de prijs vooraf bekend is.</textarea></label>
+    <button>Opslaan</button>
   </div>
 
   <!-- Verzamelpunt -->
   <div class="section">
     <h2>Verzamelpunt</h2>
-    <label>Locatie: <input type="text" id="admVerzamelLocatie" value="Centraal Station Rotterdam"></label><br>
-    <label>Tijd: <input type="time" id="admVerzamelTijd" value="09:30"></label>
+    <label>Verzamelplaats <input type="text" id="admVerzamelLocatie" value="Centraal Station Rotterdam"></label>
+    <label>Verzameltijd <input type="time" id="admVerzamelTijd" value="09:30"></label>
+    <label>Straat / Huisnummer <input type="text"></label>
+    <label>Postcode <input type="text"></label>
+    <label>Woonplaats <input type="text"></label>
+    <label>Telefoon <input type="tel"></label>
+    <button>Opslaan</button>
   </div>
 
-  <!-- Evenementen -->
+  <!-- Activiteit -->
   <div class="section">
-    <h2>Evenement toevoegen</h2>
+    <h2>Activiteit aanmaken / bewerken</h2>
     <input type="text" id="evtNaam" placeholder="Naam activiteit">
     <input type="time" id="evtStart">
     <input type="time" id="evtEind">
     <input type="number" id="evtPrijs" placeholder="Prijs p.p.">
     <input type="url" id="evtUrl" placeholder="https://...">
-    <button onclick="addEvent()">Toevoegen</button>
+    <textarea id="evtNotitie" placeholder="Notitie (optioneel)"></textarea>
+    <button onclick="addEvent()">Opslaan</button>
   </div>
   <div class="section">
     <h2>Overzicht activiteiten</h2>
     <div id="adminActiviteiten" class="overview"></div>
   </div>
 
-  <!-- Reizen -->
+  <!-- Reis -->
   <div class="section">
-    <h2>Reis toevoegen</h2>
+    <h2>Reis aanmaken / bewerken</h2>
     <input type="text" id="reisVan" placeholder="Van">
-    <input type="text" id="reisNaar" placeholder="Naar">
     <input type="time" id="reisStart">
-    <input type="time" id="reisEind">
     <input type="number" id="reisAfstand" placeholder="Afstand (km)">
+    <input type="text" id="reisNaar" placeholder="Naar">
+    <input type="time" id="reisEind">
     <input type="text" id="reisDuur" placeholder="Duur">
+    <textarea id="reisNotitie" placeholder="Notitie (optioneel)"></textarea>
     <input type="url" id="reisLink" placeholder="https://...">
-    <button onclick="addReis()">Toevoegen</button>
+    <button onclick="addReis()">Opslaan</button>
   </div>
   <div class="section">
     <h2>Overzicht reizen</h2>
@@ -110,27 +119,30 @@
 
 <!-- DETAIL -->
 <div id="detailPage">
-  <h1>Detailpagina (voorbeeld frontend)</h1>
+  <h1 id="detailTitel">Dagje Rotterdam</h1>
+  <p>Inschrijven tot: <span id="detailInschrijvenTot"></span><br>Annuleren tot: <span id="detailAnnulerenTot"></span></p>
 
-  <div class="section">
-    <h2>Wat we gaan doen</h2>
-    <div id="detailPlanning" class="overview"></div>
-  </div>
+  <h2>Verzamelpunt & Tijd</h2>
+  <p>Locatie: <span id="detailLocatie"></span><br>Tijd: <span id="detailTijd"></span></p>
 
-  <div class="section">
-    <h2>Wie gaan er mee</h2>
-    <ul id="overzichtMee"></ul>
-  </div>
+  <h2>Wat we gaan doen</h2>
+  <div id="detailPlanning" class="overview"></div>
 
-  <div class="section">
-    <h2>Mijn status</h2>
-    <div id="mijnStatus"></div>
-  </div>
+  <h2>Deelnemers</h2>
+  <ul id="overzichtMee"></ul>
+
+  <h3>Totaal te betalen</h3>
+  <p>€ 0,00 p.p.</p>
+
+  <p><strong>Let op:</strong> <span id="detailNotitie"></span></p>
+
+  <div id="mijnStatus"></div>
 </div>
 
 <script>
+// Data
 let activiteiten = [
-  { naam: 'Rondvaart door de haven', start: '10:00', eind: '11:30', prijs: 15, url: 'https://voorbeeld.nl/rondvaart', type:'event' },
+  { naam: 'Rondvaart door de haven', start: '10:00', eind: '11:30', prijs: 16, url: 'https://voorbeeld.nl/rondvaart', type:'event' },
   { naam: 'Bezoek Euromast', start: '12:00', eind: '13:00', prijs: 10, url: 'https://voorbeeld.nl/euromast', type:'event' }
 ];
 let reizen = [
@@ -154,10 +166,12 @@ function addEvent(){
     eind: document.getElementById('evtEind').value,
     prijs: document.getElementById('evtPrijs').value,
     url: document.getElementById('evtUrl').value,
+    notitie: document.getElementById('evtNotitie').value,
     type:'event'
   });
   renderAll();
 }
+
 function addReis(){
   const van = document.getElementById('reisVan').value;
   const naar = document.getElementById('reisNaar').value;
@@ -169,6 +183,7 @@ function addReis(){
     afstand: document.getElementById('reisAfstand').value,
     duur: document.getElementById('reisDuur').value,
     link: document.getElementById('reisLink').value,
+    notitie: document.getElementById('reisNotitie').value,
     type:'reis'
   });
   renderAll();
@@ -196,15 +211,15 @@ function renderAdminList(el, list, type){
     info.innerHTML = seg.join(' | ');
     const actions = document.createElement('span');
     const btnEdit = document.createElement('button');
-    btnEdit.textContent = 'Edit';
+    btnEdit.textContent = 'Bewerken';
     btnEdit.onclick = () => {
-      // eenvoudige edit: verwijderen en velden vullen
       if(type==='event'){
         document.getElementById('evtNaam').value = item.naam;
         document.getElementById('evtStart').value = item.start;
         document.getElementById('evtEind').value = item.eind;
         document.getElementById('evtPrijs').value = item.prijs;
         document.getElementById('evtUrl').value = item.url;
+        document.getElementById('evtNotitie').value = item.notitie || '';
       } else {
         const parts = item.naam.split(' → ');
         document.getElementById('reisVan').value = parts[0]||'';
@@ -214,12 +229,13 @@ function renderAdminList(el, list, type){
         document.getElementById('reisAfstand').value = item.afstand;
         document.getElementById('reisDuur').value = item.duur;
         document.getElementById('reisLink').value = item.link;
+        document.getElementById('reisNotitie').value = item.notitie || '';
       }
       list.splice(idx,1);
       renderAll();
     };
     const btnRemove = document.createElement('button');
-    btnRemove.textContent = 'Remove';
+    btnRemove.textContent = 'Verwijderen';
     btnRemove.onclick = () => { list.splice(idx,1); renderAll(); };
     actions.appendChild(btnEdit);
     actions.appendChild(btnRemove);
@@ -320,9 +336,13 @@ function renderDeelnemerFrontend(){
     statusDiv.textContent = 'GAAT NIET MEE';
     statusDiv.classList.add('status-rood');
     container.appendChild(statusDiv);
-    const btnMee = document.createElement('button');
+        const btnMee = document.createElement('button');
     btnMee.textContent = 'Ik ga mee';
-    btnMee.onclick = () => { deelnemer.welMee = true; deelnemer.geannuleerd = false; renderAll(); };
+    btnMee.onclick = () => { 
+      deelnemer.welMee = true; 
+      deelnemer.geannuleerd = false; 
+      renderAll(); 
+    };
     container.appendChild(document.createElement('br'));
     container.appendChild(btnMee);
   }
@@ -379,9 +399,17 @@ document.getElementById('showDetail').addEventListener('click', showDetailPage);
 document.getElementById('showBoth').addEventListener('click', showBothPages);
 
 function renderAll(){
+  // Admin‑overzichten
   renderAdminList(document.getElementById('adminActiviteiten'), activiteiten, 'event');
   renderAdminList(document.getElementById('adminReizen'), reizen, 'reis');
   renderDeelnemersAdmin();
+  // Detailpagina
+  document.getElementById('detailTitel').textContent = document.getElementById('admTitel').value;
+  document.getElementById('detailInschrijvenTot').textContent = document.getElementById('admInschrijvenTot').value;
+  document.getElementById('detailAnnulerenTot').textContent = document.getElementById('admAnnulerenTot').value;
+  document.getElementById('detailLocatie').textContent = document.getElementById('admVerzamelLocatie').value;
+  document.getElementById('detailTijd').textContent = document.getElementById('admVerzamelTijd').value;
+  document.getElementById('detailNotitie').textContent = document.getElementById('admNotitie').value;
   renderOverzichtFrontend();
   renderDeelnemerFrontend();
   renderDetailPlanning();
