@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<title>de Stichting - Uitjes Dashboard</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
+
+body {
+  margin: 0;
+  padding: 40px;
+  background-color: #f3efe7;
+  font-family: 'Roboto Mono', monospace;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+h1 {
+  font-size: 2.2rem;
+  margin: 0;
+  color: #5d4037;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.welcome-text {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #5d4037;
+}
+
+.profile-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.logout-button, .edit-profile-button {
+  padding: 8px 16px;
+  background-color: #a1887f;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.25s, transform 0.2s;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+.logout-button:hover, .edit-profile-button:hover {
+  background-color: #5d4037;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 15px;
+  justify-items: center;
+  flex-grow: 1;
+}
+
+.card {
+  width: 400px;
+  height: 500px;
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  border-radius: 18px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  overflow: hidden;
+  transition: transform 0.25s, box-shadow 0.25s;
+  border: 1px solid #d0bfa0;
+  position: relative;
+  background-color: #fff8f0;
+  cursor: pointer;
+  background-image: radial-gradient(rgba(220,210,200,0.2) 1px, transparent 1px), 
+                    radial-gradient(rgba(220,210,200,0.15) 1px, transparent 1px);
+  background-size: 40px 40px, 20px 20px;
+  background-position: 0 0, 10px 10px;
+}
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 14px 28px rgba(0,0,0,0.35);
+}
+
+.vertical-date {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  text-align: center;
+  background-color: #8d6e63;
+  color: #fff;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 3px;
+  padding: 20px 0;
+  border-radius: 18px;
+  position: relative;
+  z-index: 2;
+  font-size: 1.2rem;
+  height: 100%;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.content-inner {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin: 0 0 10px;
+  color: #5d4037;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+  text-align: center;
+  min-height: 2.4em;
+}
+
+.card-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin: 10px 0;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.description {
+  font-size: 1.1rem;
+  color: #6d4c41;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.bottom-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.status {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+.status.ingeschreven { color: #2e7d32; }
+.status.niet-ingeschreven { color: #c62828; }
+
+.footer-text {
+  text-align: center;
+  color: #5d4037;
+}
+
+footer {
+  text-align: center;
+  font-size: 0.95rem;
+  color: #5d4037;
+  margin-top: 40px;
+}
+
+footer a { color: #5d4037; text-decoration: underline; }
+
+.flash-title {
+  animation: flash 1s infinite alternate;
+  color: #ff5252;
+  font-size: 2.2rem;
+}
+@keyframes flash {
+  0% { color: #ff5252; text-shadow: 0 0 10px #ff5252; }
+  100% { color: #ffea00; text-shadow: 0 0 20px #ffea00; }
+}
+
+@media (max-width: 420px) {
+  .card { width: 100%; grid-template-columns: 80px 1fr; height: auto; }
+  .vertical-date { font-size: 1rem; padding: 15px 0; }
+  .card-image { height: 120px; }
+  .header { flex-direction: column; align-items: flex-start; gap: 10px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Uitjes Dashboard de Stichting</h1>
+  <div class="profile">
+    <div class="welcome-text">Welkom Roelie</div>
+    <div class="profile-buttons">
+      <button class="edit-profile-button">Profiel</button>
+      <button class="logout-button">Uitloggen</button>
+    </div>
+  </div>
+</div>
+
+<div class="grid">
+  <!-- PWA Card -->
+  <div class="card" onclick="alert('Leg uit App')">
+    <div class="vertical-date">Installeer de App</div>
+    <div class="content">
+      <div class="content-inner">
+        <div class="title flash-title">Welkom!</div>
+        <img class="card-image" src="https://developers.google.com/static/profile/badges/playlists/webdev/learn-pwa/badge.svg">
+        <div class="description">Ontdek nieuwe uitjes en beheer je inschrijvingen snel en eenvoudig in de app!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lost Card -->
+  <div class="card" onclick="alert('Lost')">
+    <div class="vertical-date">7 April 2025</div>
+    <div class="content">
+      <div class="content-inner">
+        <div class="title">Lost<br>&nbsp;</div>
+        <img class="card-image" src="https://www.gettyimages.nl/gi-resources/images/500px/983794168.jpg">
+        <div class="description">Escape Room, Pirates, Escape Island, Diner</div>
+      </div>
+      <div class="bottom-info">
+        <div class="status ingeschreven">Ingeschreven</div>
+        <div class="footer-text">20.00 € | 👥 Max: 16</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fietstocht -->
+  <div class="card" onclick="alert('Fietstocht')">
+    <div class="vertical-date">15 oktober 2025</div>
+    <div class="content">
+      <div class="content-inner">
+        <div class="title">Fietstocht langs kastelen<br>&nbsp;</div>
+        <img class="card-image" src="https://www.gettyimages.nl/gi-resources/images/500px/983794168.jpg">
+        <div class="description">Dagtocht met lunchpakket.</div>
+      </div>
+      <div class="bottom-info">
+        <div class="status ingeschreven">Ingeschreven</div>
+        <div class="footer-text">20.00 € | 👥 Max: 30</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Boottocht -->
+  <div class="card" onclick="alert('Boottocht')">
+    <div class="vertical-date">5 oktober 2025</div>
+    <div class="content">
+      <div class="content-inner">
+        <div class="title">Boottocht op de grachten<br>&nbsp;</div>
+        <img class="card-image" src="https://www.gettyimages.nl/gi-resources/images/500px/983794168.jpg">
+        <div class="description">Rondvaart inclusief gids.</div>
+      </div>
+      <div class="bottom-info">
+        <div class="status niet-ingeschreven">Niet ingeschreven</div>
+        <div class="footer-text">25.00 € | 👥 Max: 15</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wandeltocht -->
+  <div class="card" onclick="alert('Wandeltocht')">
+    <div class="vertical-date">5 september 2025</div>
+    <div class="content">
+      <div class="content-inner">
+        <div class="title">Wandeltocht op de Veluwe<br>&nbsp;</div>
+        <img class="card-image" src="https://www.gettyimages.nl/gi-resources/images/500px/983794168.jpg">
+        <div class="description">Mooie dagwandeling inclusief lunch.</div>
+      </div>
+      <div class="bottom-info">
+        <div class="status ingeschreven">Ingeschreven</div>
+        <div class="footer-text">15.00 € | 👥 Max: 20</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  &copy; 2025 De Stichting | <a href="#">Algemene Voorwaarden</a>
+</footer>
+
+</body>
+</html>

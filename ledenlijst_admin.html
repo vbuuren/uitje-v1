@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<title>Ledenlijst - Admin</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
+
+body { margin:0; padding:40px; font-family:'Roboto Mono', monospace; background:#f3efe7; }
+h1 { text-align:center; font-size:3rem; color:#5d4037; margin-bottom:30px; text-shadow:1px 1px 2px rgba(0,0,0,0.3); }
+
+.container { max-width:1900px; margin:0 auto; background:#fff8f0; padding:30px; border-radius:18px; box-shadow:0 6px 20px rgba(0,0,0,0.25); display:flex; flex-direction:column; gap:20px; }
+.table-container { overflow-x:auto; }
+
+table { width:100%; border-collapse:collapse; table-layout:fixed; }
+th, td { padding:10px 12px; border-bottom:1px solid #d0bfa0; font-size:1rem; vertical-align:middle; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+th { background:#a1887f; color:white; font-weight:bold; text-align:left; }
+th.achternaam, td.achternaam { width:12%; }
+th.voornaam, td.voornaam { width:20%; }
+th.telefoon, td.telefoon { width:15%; }
+th.email, td.email { width:25%; }
+th.gender, td.gender, th.admin, td.admin { width:6%; text-align:center; }
+th.bijzonderheden, td.bijzonderheden { width:10%; text-align:center; }
+th.acties, td.acties { width:15%; text-align:center; }
+
+tr:hover { background:#fff3e0; }
+input[type="text"], input[type="email"], input[type="tel"], select, textarea { padding:6px 10px; border:1px solid #d0bfa0; border-radius:6px; width:100%; box-sizing:border-box; font-family:inherit; }
+.admin-checkbox { width:20px; height:20px; cursor:pointer; margin:auto; display:block; }
+.action-buttons { display:flex; gap:6px; justify-content:center; align-items:center; flex-wrap:nowrap; }
+.button { width:36px; height:36px; padding:0; background:#a1887f; color:white; border:none; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.25s; }
+.button img { width:20px; height:20px; }
+.button:hover { background:#5d4037; transform:translateY(-2px); }
+.gender-icon { width:20px; height:20px; display:block; margin:auto; cursor:default; }
+.bijzonderheden img { cursor:pointer; }
+
+.add-member { margin-bottom:20px; display:flex; flex-direction:column; gap:10px; }
+.add-member-row { display:flex; gap:6px; align-items:center; flex-wrap:wrap; display:none; }
+
+.modal-bg { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:999; align-items:center; justify-content:center; }
+.modal { background:#fff8f0; padding:20px; border-radius:12px; max-width:400px; width:90%; box-shadow:0 6px 20px rgba(0,0,0,0.3); position:relative; }
+.modal h3 { margin-top:0; }
+.modal label { display:block; margin:6px 0; }
+.modal textarea { resize:vertical; }
+.modal button { margin-top:10px; padding:6px 12px; border:none; border-radius:6px; cursor:pointer; background:#a1887f; color:white; font-family:inherit; transition:0.25s; }
+.modal button:hover { background:#5d4037; }
+.close-btn { position:absolute; top:10px; right:10px; background:none; border:none; font-size:1.2rem; cursor:pointer; }
+
+.footer { text-align:center; font-size:0.95rem; color:#5d4037; margin-top:30px; }
+.footer a { color:#5d4037; text-decoration:underline; }
+</style>
+</head>
+<body>
+
+<h1>Ledenlijst</h1>
+
+<div class="container">
+  <button class="button" onclick="toggleAddMemberRow()" title="Nieuw lid"><img src="https://img.icons8.com/ios-glyphs/30/ffffff/plus.png"/></button>
+
+  <div class="add-member">
+    <div class="add-member-row" id="addMemberRow">
+      <input type="text" id="newAchternaam" placeholder="Achternaam">
+      <input type="text" id="newVoornaam" placeholder="Voornaam">
+      <input type="text" id="newTussenvoegsel" placeholder="Tussenvoegsel">
+      <select id="newGender">
+        <option value="" selected>Kies geslacht</option>
+        <option value="m">Man</option>
+        <option value="v">Vrouw</option>
+        <option value="a">Anders</option>
+      </select>
+      <input type="tel" id="newTel" placeholder="Telefoon">
+      <input type="email" id="newEmail" placeholder="Email">
+      <textarea id="newBijzonderheden" placeholder="Bijzonderheden"></textarea>
+      <input type="checkbox" id="newAdmin" title="Admin?"> Admin
+      <button class="button" onclick="addNewMember()" title="Lid toevoegen"><img src="https://img.icons8.com/ios-glyphs/30/ffffff/plus.png"/></button>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table id="ledenTable">
+      <thead>
+        <tr>
+          <th class="achternaam">Achternaam</th>
+          <th class="voornaam">Voornaam</th>
+          <th class="telefoon">Telefoon</th>
+          <th class="email">Email</th>
+          <th class="gender">Geslacht</th>
+          <th class="admin">Admin</th>
+          <th class="bijzonderheden">Bijzonderheden</th>
+          <th class="acties">Acties</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal-bg" id="modalBg">
+  <div class="modal" id="modalContent">
+    <button class="close-btn" onclick="closeModal()">×</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<footer class="footer">
+  &copy; 2025 De Stichting | <a href="#">Algemene Voorwaarden</a>
+</footer>
+
+<script>
+const voorbeeldLeden = [
+  {achternaam:"Buren", voornaam:"Marcel", tussenvoegsel:"van", tel:"0612345678", email:"marcel@example.com", admin:true, gender:"m", bijzonderheden:"Allergie: noten"},
+  {achternaam:"Onkruijt", voornaam:"Roelie", tussenvoegsel:"", tel:"0611122233", email:"roelie@example.com", admin:false, gender:"v", bijzonderheden:"Hoogtevrees"},
+  {achternaam:"Hazenberg", voornaam:"Sandra", tussenvoegsel:"", tel:"0612233445", email:"sandra@example.com", admin:false, gender:"v", bijzonderheden:"Geen"},
+  {achternaam:"Doe", voornaam:"John", tussenvoegsel:"", tel:"0612345670", email:"john@example.com", admin:false, gender:"m", bijzonderheden:"Vegetariër"},
+  {achternaam:"Vries", voornaam:"Alice", tussenvoegsel:"de", tel:"0613344556", email:"alice@example.com", admin:true, gender:"v", bijzonderheden:"Allergie: gluten"},
+  {achternaam:"Jansen", voornaam:"Bob", tussenvoegsel:"", tel:"0614455667", email:"bob@example.com", admin:false, gender:"m", bijzonderheden:"Geen"},
+  {achternaam:"Dijk", voornaam:"Carol", tussenvoegsel:"van", tel:"0615566778", email:"carol@example.com", admin:false, gender:"v", bijzonderheden:"Diabetes"},
+  {achternaam:"Smit", voornaam:"David", tussenvoegsel:"", tel:"0616677889", email:"david@example.com", admin:true, gender:"m", bijzonderheden:"Hoogtevrees"},
+  {achternaam:"Bakker", voornaam:"Eva", tussenvoegsel:"", tel:"0617788990", email:"eva@example.com", admin:false, gender:"v", bijzonderheden:"Vegetariër"},
+  {achternaam:"Meijer", voornaam:"Frank", tussenvoegsel:"", tel:"0618899001", email:"frank@example.com", admin:false, gender:"m", bijzonderheden:"Geen"}
+];
+
+function genderIcon(g){ 
+  if(g==="m") return '<img class="gender-icon" src="https://img.icons8.com/ios-glyphs/30/000000/male.png" title="Man"/>';
+  if(g==="v") return '<img class="gender-icon" src="https://img.icons8.com/ios-glyphs/30/000000/female.png" title="Vrouw"/>';
+  if(g==="a") return '<img class="gender-icon" src="https://img.icons8.com/ios-glyphs/30/000000/gender-neutral.png" title="Anders"/>';
+  return '';
+}
+
+function loadVoorbeeldLeden(){
+  const tbody=document.querySelector('#ledenTable tbody');
+  voorbeeldLeden.sort((a,b)=>a.achternaam.localeCompare(b.achternaam)).forEach(lid=>{
+    tbody.appendChild(createRow(lid));
+  });
+}
+
+function createRow(lid){
+  const row=document.createElement('tr');
+  const voornaamVolledig = lid.voornaam + (lid.tussenvoegsel ? ' '+lid.tussenvoegsel:'');
+  row.innerHTML=`
+    <td class="achternaam">${lid.achternaam}</td>
+    <td class="voornaam">${voornaamVolledig}</td>
+    <td class="telefoon">${lid.tel}</td>
+    <td class="email">${lid.email}</td>
+    <td class="gender">${genderIcon(lid.gender)}</td>
+    <td class="admin"><input type="checkbox" class="admin-checkbox" disabled ${lid.admin?'checked':''}></td>
+    <td class="bijzonderheden">
+      ${lid.bijzonderheden ? 
+        `<img src="https://img.icons8.com/ios-glyphs/30/000000/info.png" title="${lid.bijzonderheden}" onclick="showBijzonderhedenModal('${lid.bijzonderheden.replace(/'/g,"\\'")}')"/>` 
+        : ''
+      }
+    </td>
+    <td class="acties">
+      <div class="action-buttons">
+        <button class="button" onclick="openEditModal(this)" title="Edit"><img src="https://img.icons8.com/ios-glyphs/30/ffffff/edit.png"/></button>
+        <button class="button" onclick="openInviteModal(this)" title="Uitnodigen"><img src="https://img.icons8.com/ios-glyphs/30/ffffff/telegram-app.png"/></button>
+        <button class="button" onclick="openResetModal(this)" title="Reset WW"><img src="https://img.icons8.com/ios-glyphs/30/ffffff/key.png"/></button>
+        <button class="button" onclick="openDeleteModal(this)" title="Verwijderen"><img src="https://img.icons8.com/ios-glyphs/30/ffffff/trash.png"/></button>
+      </div>
+    </td>
+  `;
+  return row;
+}
+
+function toggleAddMemberRow(){
+  const row=document.getElementById('addMemberRow');
+  row.style.display=row.style.display==='flex'?'none':'flex';
+}
+
+function addNewMember(){
+  const lid={
+    achternaam:document.getElementById('newAchternaam').value.trim(),
+    voornaam:document.getElementById('newVoornaam').value.trim(),
+    tussenvoegsel:document.getElementById('newTussenvoegsel').value.trim(),
+    gender:document.getElementById('newGender').value,
+    tel:document.getElementById('newTel').value.trim(),
+    email:document.getElementById('newEmail').value.trim(),
+    bijzonderheden:document.getElementById('newBijzonderheden').value.trim(),
+    admin:document.getElementById('newAdmin').checked
+  };
+  if(!lid.achternaam || !lid.voornaam || !lid.gender){ alert('Vul minimaal Achternaam, Voornaam en Geslacht in'); return; }
+  document.querySelector('#ledenTable tbody').appendChild(createRow(lid));
+  document.getElementById('addMemberRow').style.display='none';
+  document.getElementById('newAchternaam').value=''; document.getElementById('newVoornaam').value=''; document.getElementById('newTussenvoegsel').value=''; document.getElementById('newGender').value=''; document.getElementById('newTel').value=''; document.getElementById('newEmail').value=''; document.getElementById('newBijzonderheden').value=''; document.getElementById('newAdmin').checked=false;
+}
+
+function openEditModal(btn){ 
+  const row=btn.closest('tr');
+  const achternaam=row.cells[0].innerText;
+  const voornaamVol=row.cells[1].innerText;
+  const voornaamArr=voornaamVol.split(' ');
+  const voornaam=voornaamArr[0];
+  const tussenvoegsel=voornaamArr.length>1 ? voornaamArr.slice(1).join(' ') : '';
+  const tel=row.cells[2].innerText;
+  const email=row.cells[3].innerText;
+  const gender=row.cells[4].querySelector('img').title==='Man'?'m':(row.cells[4].querySelector('img').title==='Vrouw'?'v':'a');
+  const admin=row.cells[5].querySelector('input').checked;
+  const bijzonderheden=row.cells[6].querySelector('img')?row.cells[6].querySelector('img').title:'';
+  openModal('Lid bewerken',`
+    <label>Achternaam<input type="text" id="editAchternaam" value="${achternaam}"></label>
+    <label>Voornaam<input type="text" id="editVoornaam" value="${voornaam}"></label>
+    <label>Tussenvoegsel<input type="text" id="editTussenvoegsel" value="${tussenvoegsel}"></label>
+    <label>Telefoon<input type="tel" id="editTel" value="${tel}"></label>
+    <label>Email<input type="email" id="editEmail" value="${email}"></label>
+    <label>Geslacht<select id="editGender">
+      <option value="m"${gender==='m'?' selected':''}>Man</option>
+      <option value="v"${gender==='v'?' selected':''}>Vrouw</option>
+      <option value="a"${gender==='a'?' selected':''}>Anders</option>
+    </select></label>
+    <label>Bijzonderheden<textarea id="editBijzonderheden">${bijzonderheden}</textarea></label>
+    <label><input type="checkbox" id="editAdmin"${admin?' checked':''}> Admin</label>
+    <button onclick="saveEdit(${row.rowIndex-1})">Opslaan</button>
+  `);
+}
+
+function saveEdit(index){
+  const row=document.querySelector('#ledenTable tbody').rows[index];
+  const achternaam=document.getElementById('editAchternaam').value.trim();
+  const voornaam=document.getElementById('editVoornaam').value.trim();
+  const tussenvoegsel=document.getElementById('editTussenvoegsel').value.trim();
+  const tel=document.getElementById('editTel').value.trim();
+  const email=document.getElementById('editEmail').value.trim();
+  const gender=document.getElementById('editGender').value;
+  const admin=document.getElementById('editAdmin').checked;
+  const bijzonderheden=document.getElementById('editBijzonderheden').value.trim();
+  const voornaamVolledig = voornaam + (tussenvoegsel ? ' '+tussenvoegsel:'');
+  row.cells[0].innerText=achternaam;
+  row.cells[1].innerText=voornaamVolledig;
+  row.cells[2].innerText=tel;
+  row.cells[3].innerText=email;
+  row.cells[4].innerHTML=genderIcon(gender);
+  row.cells[5].querySelector('input').checked=admin;
+  row.cells[6].innerHTML = bijzonderheden ? `<img src="https://img.icons8.com/ios-glyphs/30/000000/info.png" title="${bijzonderheden}" onclick="showBijzonderhedenModal('${bijzonderheden.replace(/'/g,"\\'")}')"/>` : '';
+  closeModal();
+}
+
+function openInviteModal(btn){
+  const row=btn.closest('tr');
+  const email=row.cells[3].innerText;
+  openModal('Uitnodigen',`
+    <p>Kies via welk medium je de uitnodiging wilt sturen:</p>
+    <button onclick="alert('Uitnodigen via Email naar ${email}')">Email</button>
+    <button onclick="alert('Uitnodigen via WhatsApp naar ${email}')">WhatsApp</button>
+  `);
+}
+
+function openResetModal(btn){
+  const row=btn.closest('tr');
+  const email=row.cells[3].innerText;
+  openModal('Reset Wachtwoord',`
+    <p>Kies via welk medium je het nieuwe wachtwoord wilt versturen:</p>
+    <button onclick="alert('Reset WW via Email naar ${email}')">Email</button>
+    <button onclick="alert('Reset WW via WhatsApp naar ${email}')">WhatsApp</button>
+  `);
+}
+
+function openDeleteModal(btn){
+  const row=btn.closest('tr');
+  const naam=row.cells[1].innerText + ' ' + row.cells[0].innerText;
+  openModal('Verwijderen lid',`
+    <p>Weet je zeker dat je ${naam} wilt verwijderen?</p>
+    <button onclick="deleteMember(${row.rowIndex-1})">Ja, verwijderen</button>
+  `);
+}
+
+function deleteMember(index){ 
+  document.querySelector('#ledenTable tbody').rows[index].remove();
+  closeModal();
+}
+
+function showBijzonderhedenModal(tekst){
+  openModal('Bijzonderheden', `<p>${tekst}</p>`);
+}
+
+function openModal(title, content){
+  const bg=document.getElementById('modalBg');
+  const body=document.getElementById('modalBody');
+  body.innerHTML=`<h3>${title}</h3>${content}`;
+  bg.style.display='flex';
+}
+
+function closeModal(){ document.getElementById('modalBg').style.display='none'; }
+
+document.addEventListener('DOMContentLoaded', loadVoorbeeldLeden);
+</script>
+
+</body>
+</html>
