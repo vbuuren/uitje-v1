@@ -380,14 +380,27 @@ function updateDetail(){
   document.getElementById('detailLocatieLink').textContent='📍 Bekijk locatie in Google Maps';
   document.getElementById('detailRoute').href=document.getElementById('gmVerzamelLink').value||'#';
   // Activiteiten
-  const actDiv=document.getElementById('detailActiviteiten'); actDiv.innerHTML='';
-  activiteiten.forEach(act=>{
-    const div=document.createElement('div'); div.className='evenement';
-    div.innerHTML=`<div class="info"><div><img src="https://img.icons8.com/ios-glyphs/24/000000/flag.png"> ${act.naam}</div>
-      ${act.start?'<div>'+act.start+' - '+act.eind+'</div>':''}</div>
-      ${act.prijs>0?'<div class="prijs">€ '+act.prijs.toFixed(2)+' p.p.</div>':''}`;
-    actDiv.appendChild(div);
-  });
+const actDiv = document.getElementById('detailActiviteiten');
+actDiv.innerHTML = '';
+
+activiteiten.forEach(act => {
+  const div = document.createElement('div');
+  div.className = 'evenement';
+  div.innerHTML = `
+    <div class="info">
+      <div class="naam"><img src="https://img.icons8.com/ios-glyphs/24/000000/flag.png"> ${act.naam}</div>
+      ${act.start
+        ? `<div><span class="starttijd">${act.start}</span> - <span class="eindtijd">${act.eind}</span></div>`
+        : ''}
+    </div>
+    ${act.prijs > 0 ? `<div class="prijs">€ ${act.prijs.toFixed(2)} p.p.</div>` : ''}
+  `;
+  actDiv.appendChild(div);
+});
+
+// Na renderen activiteiten: vul datalist voor Reizen
+updateLocatiesDatalist();
+
   // Deelnemers mee
   const meeList=document.getElementById('mee'); let meeText=[]; meeList.querySelectorAll('.drag-item').forEach(d=>meeText.push(d.textContent));
   document.getElementById('detailDeelnemers').textContent=meeText.join(', ');
@@ -406,11 +419,28 @@ document.getElementById('pdfUpload').addEventListener('change',e=>{
 // Init
 createDeelnemers();
 updateDetail();
+function updateLocatiesDatalist() {
+  const locatiesSet = new Set();
+  document.querySelectorAll('#detailActiviteiten .evenement .naam').forEach(el => {
+    const naam = el.textContent.replace(/^\s*🏁\s*/, '').trim();
+    if (naam) locatiesSet.add(naam);
+  });
+  const datalist = document.getElementById('locaties');
+  if (!datalist) return;
+  datalist.innerHTML = '';
+  locatiesSet.forEach(loc => {
+    const opt = document.createElement('option');
+    opt.value = loc;
+    datalist.appendChild(opt);
+  });
+}
+
 </script>
 <footer class="footer">&copy; 2025 De Stichting | <a href="#">Algemene Voorwaarden</a> · v3</footer>
 
 </body>
 </html>
+
 
 
 
