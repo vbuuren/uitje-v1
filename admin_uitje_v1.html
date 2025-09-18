@@ -134,7 +134,7 @@ body{font-family:'Roboto Mono', monospace;background:var(--bg);padding:18px;disp
       <div class="half"><label class="smalltext">Eindtijd<br><input id="actEindtijd" class="input smalltime" type="time"></label></div>
       <div class="half"><label class="smalltext">Prijs (€)<br><input id="actPrijs" class="input small" type="number" value="0.00"></label><span class="note">bij €0,00 wordt dit automatisch nacalculatie</span></div>
       <div class="full"><label class="smalltext">Notitie (optioneel)<br><input id="actNotitie" class="input" type="text"></label></div>
-      <div style="display:flex;justify-content:flex-end"><button class="btn" onclick="addActiviteit()">Voeg activiteit toe</button></div>
+      <div style="display:flex;justify-content:flex-end"><button class="btn" id="addActiviteitBtn" type="button">Opslaan activiteit</button></div>
     </div>
   </div>
 
@@ -362,4 +362,5 @@ updateDetail();
 
 </body>
 </html>
+
 
