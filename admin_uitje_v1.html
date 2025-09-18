@@ -1,53 +1,51 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8">
-  <title>Uitje – Admin + Detail</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 0; background: #ececec; }
-    h1 { margin: 0 0 16px 0; }
-    .section { background: #fff; padding: 20px; margin-bottom: 20px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    #adminPage { background: #f4f8fb; padding: 30px; }
-    #detailPage { background: #fff; padding: 30px; }
-    hr.page-sep { margin: 0; border: 0; border-top: 8px solid #ccc; }
-    .overview { border: 1px solid #e5e5e5; border-radius: 6px; overflow: hidden; }
-    .overview-item { padding: 10px 12px; border-bottom: 1px solid #eee; background: #fff; }
-    .overview-item:last-child { border-bottom: none; }
-    .clickable { cursor: pointer; }
-    .nav-bar { background: #333; padding: 10px; text-align: center; position: sticky; top: 0; z-index: 10; }
-    .nav-bar button { background: #0078d4; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; margin: 0 5px; }
-    .nav-bar button:hover { background: #005a9e; }
-    table { border-collapse: collapse; width: 100%; }
-    th, td { border: 1px solid #ccc; padding: 6px; text-align: center; }
-    th { background: #f0f0f0; }
-  </style>
+<meta charset="UTF-8">
+<title>Uitje – Admin + Detail</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 0; background: #ececec; }
+  h1 { margin: 0 0 16px 0; }
+  .section { background: #fff; padding: 20px; margin-bottom: 20px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+  #adminPage { background: #f4f8fb; padding: 30px; }
+  #detailPage { background: #fff; padding: 30px; }
+  hr.page-sep { margin: 0; border: 0; border-top: 8px solid #ccc; }
+  .overview { border: 1px solid #e5e5e5; border-radius: 6px; overflow: hidden; }
+  .overview-item { padding: 10px 12px; border-bottom: 1px solid #eee; background: #fff; }
+  .overview-item:last-child { border-bottom: none; }
+  .clickable { cursor: pointer; }
+  .nav-bar { background: #333; padding: 10px; text-align: center; position: sticky; top: 0; z-index: 10; }
+  .nav-bar button { background: #0078d4; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; margin: 0 5px; }
+  .nav-bar button:hover { background: #005a9e; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid #ccc; padding: 6px; text-align: center; }
+  th { background: #f0f0f0; }
+  .welmee { background-color: #d4edda; }
+  .geannuleerd { background-color: #f8d7da; }
+</style>
 </head>
 <body>
 
-<!-- Navigatieknoppen -->
 <div class="nav-bar">
   <button id="showAdmin">Beheerpagina</button>
   <button id="showDetail">Detailpagina</button>
   <button id="showBoth">Toon beide</button>
 </div>
 
-<!-- ===== ADMIN DEEL ===== -->
+<!-- ADMIN -->
 <div id="adminPage">
   <h1>Beheerpagina</h1>
 
-  <!-- Overzicht activiteiten -->
   <div class="section">
     <h2>Overzicht activiteiten</h2>
     <div id="adminActiviteiten" class="overview"></div>
   </div>
 
-  <!-- Overzicht reizen -->
   <div class="section">
     <h2>Overzicht reizen</h2>
     <div id="adminReizen" class="overview"></div>
   </div>
 
-  <!-- Deelnemersbeheer -->
   <div class="section">
     <h2>Deelnemers</h2>
     <table id="deelnemersTabel">
@@ -56,7 +54,8 @@
           <th>Naam</th>
           <th>Wel mee</th>
           <th>Geannuleerd</th>
-          <th>Reset annulering</th>
+          <th>Reset</th>
+          <th>Verplaats</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -66,29 +65,25 @@
 
 <hr class="page-sep">
 
-<!-- ===== DETAIL DEEL ===== -->
+<!-- DETAIL -->
 <div id="detailPage">
   <h1>Detailpagina (voorbeeld frontend)</h1>
 
-  <!-- Activiteiten -->
   <div class="section">
     <h2>Wat we gaan doen</h2>
     <div id="detailActiviteiten" class="overview"></div>
   </div>
 
-  <!-- Reizen -->
   <div class="section">
     <h2>Reizen</h2>
     <div id="detailReizen" class="overview"></div>
   </div>
 
-  <!-- Overzicht deelnemers -->
   <div class="section">
     <h2>Wie gaan er mee</h2>
     <ul id="overzichtMee"></ul>
   </div>
 
-  <!-- Mijn status -->
   <div class="section">
     <h2>Mijn status</h2>
     <div id="mijnStatus"></div>
@@ -96,181 +91,225 @@
 </div>
 
 <script>
-  // Dummy-data
-  const activiteiten = [
-    { naam: 'Rondvaart door de haven', start: '10:00', eind: '11:30', prijs: 15, url: 'https://voorbeeld.nl/rondvaart' },
-    { naam: 'Bezoek Euromast', start: '12:00', eind: '13:00', prijs: 10, url: 'https://voorbeeld.nl/euromast' }
-  ];
-  const reizen = [
-    { van: 'Centraal Station', naar: 'Haven', tijdVan: '09:30', tijdTot: '10:00', afstand: 5, duur: '15 min', link: 'https://maps.google.com' }
-  ];
-  let deelnemers = [
-    { naam: 'Marcel', welMee: false, geannuleerd: false },
-    { naam: 'Petra', welMee: true, geannuleerd: false },
-    { naam: 'Jan', welMee: false, geannuleerd: true }
-  ];
-  const ingelogdeNaam = 'Marcel';
+const activiteiten = [
+  { naam: 'Rondvaart door de haven', start: '10:00', eind: '11:30', prijs: 15, url: 'https://voorbeeld.nl/rondvaart' },
+  { naam: 'Bezoek Euromast', start: '12:00', eind: '13:00', prijs: 10, url: 'https://voorbeeld.nl/euromast' }
+];
+const reizen = [
+  { van: 'Centraal Station', naar: 'Haven', tijdVan: '09:30', tijdTot: '10:00', afstand: 5, duur: '15 min', link: 'https://maps.google.com' }
+];
+let deelnemers = [
+  { naam: 'Marcel', welMee: false, geannuleerd: false },
+  { naam: 'Petra', welMee: true, geannuleerd: false },
+  { naam: 'Jan', welMee: false, geannuleerd: true }
+];
+const ingelogdeNaam = 'Marcel';
 
-  function euroBedrag(n) { return Number(n||0).toFixed(2).replace('.', ','); }
+function euroBedrag(n) { return Number(n||0).toFixed(2).replace('.', ','); }
 
-  function renderActiviteiten(el, list) {
-    el.innerHTML = '';
-    if (!list.length) { el.innerHTML = '<div class="overview-item">Geen activiteiten</div>'; return; }
-    list.forEach(act => {
-      const seg = [`🏁 ${act.naam}`];
-      if (act.start || act.eind) seg.push(`🕒 ${act.start||''}${(act.start&&act.eind)?' - ':''}${act.eind||''}`);
-      if (act.prijs) seg.push(`💶 € ${euroBedrag(act.prijs)} p.p.`);
-      if (act.url) seg.push('🔗 Link');
-      const row = document.createElement('div');
-      row.className = 'overview-item' + (act.url ? ' clickable' : '');
-      row.innerHTML = seg.join(' | ');
-      if (act.url) row.addEventListener('click', () => window.open(act.url, '_blank'));
-      el.appendChild(row);
+function renderActiviteiten(el, list) {
+  el.innerHTML = '';
+  if (!list.length) { el.innerHTML = '<div class="overview-item">Geen activiteiten</div>'; return; }
+  list.forEach(act => {
+    const seg = [`🏁 ${act.naam}`];
+    if (act.start || act.eind) seg.push(`🕒 ${act.start||''}${(act.start&&act.eind)?' - ':''}${act.eind||''}`);
+    if (act.prijs) seg.push(`💶 € ${euroBedrag(act.prijs)} p.p.`);
+    if (act.url) seg.push('🔗 Link');
+    const row = document.createElement('div');
+    row.className = 'overview-item' + (act.url ? ' clickable' : '');
+    row.innerHTML = seg.join(' | ');
+    if (act.url) row.addEventListener('click', () => window.open(act.url, '_blank'));
+    el.appendChild(row);
+  });
+}
+
+function renderReizen(el, list) {
+  el.innerHTML = '';
+  if (!list.length) { el.innerHTML = '<div class="overview-item">Geen reizen</div>'; return; }
+  list.forEach(r => {
+    const seg = [];
+    const route = [r.van, r.naar].filter(Boolean).join(' → ');
+    if (route) seg.push(`🚗 ${route}`);
+    if (r.tijdVan || r.tijdTot) seg.push(`🕒 ${r.tijdVan||''}${(r.tijdVan&&r.tijdTot)?' - ':''}${r.tijdTot||''}`);
+    if (r.afstand) seg.push(`📏 ${String(r.afstand).replace('.', ',')} km`);
+    if (r.duur) seg.push(`⏱️ ${r.duur}`);
+    if (r.link) seg.push(`<a href="${r.link}" target="_blank">🔗 Route</a>`);
+    const row = document.createElement('div');
+    row.className = 'overview-item';
+    row.innerHTML = seg.join(' | ');
+    el.appendChild(row);
+  });
+}
+
+function renderDeelnemersAdmin() {
+  const tbody = document.querySelector('#deelnemersTabel tbody');
+  tbody.innerHTML = '';
+  deelnemers.forEach((d, idx) => {
+    const tr = document.createElement('tr');
+    if (d.welMee) tr.classList.add('welmee');
+    if (d.geannuleerd) tr.classList.add('geannuleerd');
+
+    // Naam
+    const tdNaam = document.createElement('td');
+    tdNaam.textContent = d.naam;
+    tr.appendChild(tdNaam);
+
+    // Wel mee
+    const tdWel = document.createElement('td');
+    const chkWel = document.createElement('input');
+    chkWel.type = 'checkbox';
+    chkWel.checked = d.welMee;
+    chkWel.addEventListener('change', e => {
+      d.welMee = e.target.checked;
+      if (d.welMee) d.geannuleerd = false;
+      renderAll();
     });
-  }
+    tdWel.appendChild(chkWel);
+    tr.appendChild(tdWel);
 
-  function renderReizen(el, list) {
-    el.innerHTML = '';
-    if (!list.length) { el.innerHTML = '<div class="overview-item">Geen reizen</div>'; return; }
-    list.forEach(r => {
-      const seg = [];
-      const route = [r.van, r.naar].filter(Boolean).join(' → ');
-      if (route) seg.push(`🚗 ${route}`);
-      if (r.tijdVan || r.tijdTot) seg.push(`🕒 ${r.tijdVan||''}${(r.tijdVan&&r.tijdTot)?' - ':''}${r.tijdTot||''}`);
-      if (r.afstand) seg.push(`📏 ${String(r.afstand).replace('.', ',')} km`);
-      if (r.duur) seg.push(`⏱️ ${r.duur}`);
-      if (r.link) seg.push(`<a href="${r.link}" target="_blank">🔗 Route</a>`);
-      const row = document.createElement('div');
-      row.className = 'overview-item';
-      row.innerHTML = seg.join(' | ');
-      el.appendChild(row);
+    // Geannuleerd
+    const tdAnn = document.createElement('td');
+    const chkAnn = document.createElement('input');
+    chkAnn.type = 'checkbox';
+    chkAnn.checked = d.geannuleerd;
+    chkAnn.disabled = true; // alleen admin via reset kan dit uitzetten
+    tdAnn.appendChild(chkAnn);
+    tr.appendChild(tdAnn);
+
+    // Reset knop
+    const tdReset = document.createElement('td');
+    const btnReset = document.createElement('button');
+    btnReset.textContent = 'Reset';
+    btnReset.addEventListener('click', () => {
+      d.geannuleerd = false;
+      d.welMee = false;
+      renderAll();
     });
-  }
+    tdReset.appendChild(btnReset);
+    tr.appendChild(tdReset);
 
-  function renderDeelnemersAdmin() {
-    const tbody = document.querySelector('#deelnemersTabel tbody');
-    tbody.innerHTML = '';
-    deelnemers.forEach((d, idx) => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${d.naam}</td>
-        <td><input type="checkbox" ${d.welMee?'checked':''}></td>
-        <td><input type="checkbox" ${d.geannuleerd?'checked':''} disabled></td>
-        <td><button>Reset</button></td>
-      `;
-      // Wel mee toggle
-      tr.children[1].firstChild.addEventListener('change', e => {
-        d.welMee = e.target.checked;
-        if (d.welMee) d.geannuleerd = false;
-        renderDeelnemersAdmin(); renderOverzichtFrontend(); renderDeelnemerFrontend();
-      });
-      // Reset knop
-      tr.children[3].firstChild.addEventListener('click', () => {
-        d.geannuleerd = false; d.welMee = false;
-        renderDeelnemersAdmin(); renderOverzichtFrontend(); renderDeeln
-              tr.children[3].firstChild.addEventListener('click', () => {
-        d.geannuleerd = false;
-        d.welMee = false;
-        renderDeelnemersAdmin();
-        renderOverzichtFrontend();
-        renderDeelnemerFrontend();
-      });
-
-      tbody.appendChild(tr);
+    // Verplaatsknoppen
+    const tdMove = document.createElement('td');
+    const btnUp = document.createElement('button');
+    btnUp.textContent = '↑';
+    btnUp.disabled = idx === 0;
+    btnUp.addEventListener('click', () => {
+      if (idx > 0) {
+        const temp = deelnemers[idx];
+        deelnemers[idx] = deelnemers[idx - 1];
+        deelnemers[idx - 1] = temp;
+        renderAll();
+      }
     });
+    const btnDown = document.createElement('button');
+    btnDown.textContent = '↓';
+    btnDown.disabled = idx === deelnemers.length - 1;
+    btnDown.addEventListener('click', () => {
+      if (idx < deelnemers.length - 1) {
+        const temp = deelnemers[idx];
+        deelnemers[idx] = deelnemers[idx + 1];
+        deelnemers[idx + 1] = temp;
+        renderAll();
+      }
+    });
+    tdMove.appendChild(btnUp);
+    tdMove.appendChild(btnDown);
+    tr.appendChild(tdMove);
+
+    tbody.appendChild(tr);
+  });
+}
+
+// Frontend: overzicht van alleen wel‑mee en niet‑geannuleerd
+function renderOverzichtFrontend() {
+  const lijst = document.getElementById('overzichtMee');
+  lijst.innerHTML = '';
+  deelnemers
+    .filter(d => d.welMee && !d.geannuleerd)
+    .forEach(d => {
+      const li = document.createElement('li');
+      li.textContent = d.naam;
+      lijst.appendChild(li);
+    });
+}
+
+// Frontend: status van ingelogde deelnemer
+function renderDeelnemerFrontend() {
+  const container = document.getElementById('mijnStatus');
+  container.innerHTML = '';
+  const deelnemer = deelnemers.find(d => d.naam === ingelogdeNaam);
+  if (!deelnemer) {
+    container.textContent = 'Onbekende deelnemer.';
+    return;
   }
 
-  // Frontend: overzicht van alleen wel‑mee en niet‑geannuleerd
-  function renderOverzichtFrontend() {
-    const lijst = document.getElementById('overzichtMee');
-    lijst.innerHTML = '';
-    deelnemers
-      .filter(d => d.welMee && !d.geannuleerd)
-      .forEach(d => {
-        const li = document.createElement('li');
-        li.textContent = d.naam;
-        lijst.appendChild(li);
-      });
+  if (deelnemer.geannuleerd) {
+    container.textContent = 'Je hebt geannuleerd. Neem contact op met de organisator voor herstel.';
+    return;
   }
 
-  // Frontend: status van ingelogde deelnemer
-  function renderDeelnemerFrontend() {
-    const container = document.getElementById('mijnStatus');
-    container.innerHTML = '';
-    const deelnemer = deelnemers.find(d => d.naam === ingelogdeNaam);
-    if (!deelnemer) {
-      container.textContent = 'Onbekende deelnemer.';
-      return;
-    }
-
-    if (deelnemer.geannuleerd) {
-      container.textContent = 'Je hebt geannuleerd. Neem contact op met de organisator voor herstel.';
-      return;
-    }
-
-    if (deelnemer.welMee) {
-      container.textContent = 'Je staat op: Wel mee';
-      const btnAnnuleer = document.createElement('button');
-      btnAnnuleer.textContent = 'Annuleer deelname';
-      btnAnnuleer.addEventListener('click', () => {
-        deelnemer.geannuleerd = true;
-        deelnemer.welMee = false;
-        renderDeelnemerFrontend();
-        renderOverzichtFrontend();
-        renderDeelnemersAdmin();
-      });
-      container.appendChild(document.createElement('br'));
-      container.appendChild(btnAnnuleer);
-    } else {
-      const btnMee = document.createElement('button');
-      btnMee.textContent = 'Ik ga mee';
-      btnMee.addEventListener('click', () => {
-        deelnemer.welMee = true;
-        renderDeelnemerFrontend();
-        renderOverzichtFrontend();
-        renderDeelnemersAdmin();
-      });
-      container.appendChild(btnMee);
-    }
+  if (deelnemer.welMee) {
+    container.textContent = 'Je staat op: Wel mee';
+    const btnAnnuleer = document.createElement('button');
+    btnAnnuleer.textContent = 'Annuleer deelname';
+    btnAnnuleer.addEventListener('click', () => {
+      deelnemer.geannuleerd = true;
+      deelnemer.welMee = false;
+      renderAll();
+    });
+    container.appendChild(document.createElement('br'));
+    container.appendChild(btnAnnuleer);
+  } else {
+    const btnMee = document.createElement('button');
+    btnMee.textContent = 'Ik ga mee';
+    btnMee.addEventListener('click', () => {
+      deelnemer.welMee = true;
+      renderAll();
+    });
+    container.appendChild(btnMee);
   }
+}
 
-  // Navigatie tussen Admin/Detail
-  const adminPage = document.getElementById('adminPage');
-  const detailPage = document.getElementById('detailPage');
-  const pageSep = document.querySelector('.page-sep');
+// Navigatie tussen Admin/Detail
+const adminPage = document.getElementById('adminPage');
+const detailPage = document.getElementById('detailPage');
+const pageSep = document.querySelector('.page-sep');
 
-  function showAdminPage() {
-    adminPage.style.display = 'block';
-    detailPage.style.display = 'none';
-    if (pageSep) pageSep.style.display = 'none';
-  }
-  function showDetailPage() {
-    adminPage.style.display = 'none';
-    detailPage.style.display = 'block';
-    if (pageSep) pageSep.style.display = 'none';
-  }
-  function showBothPages() {
-    adminPage.style.display = 'block';
-    detailPage.style.display = 'block';
-    if (pageSep) pageSep.style.display = 'block';
-  }
+function showAdminPage() {
+  adminPage.style.display = 'block';
+  detailPage.style.display = 'none';
+  if (pageSep) pageSep.style.display = 'none';
+}
+function showDetailPage() {
+  adminPage.style.display = 'none';
+  detailPage.style.display = 'block';
+  if (pageSep) pageSep.style.display = 'none';
+}
+function showBothPages() {
+  adminPage.style.display = 'block';
+  detailPage.style.display = 'block';
+  if (pageSep) pageSep.style.display = 'block';
+}
 
-  document.getElementById('showAdmin').addEventListener('click', showAdminPage);
-  document.getElementById('showDetail').addEventListener('click', showDetailPage);
-  document.getElementById('showBoth').addEventListener('click', showBothPages);
+document.getElementById('showAdmin').addEventListener('click', showAdminPage);
+document.getElementById('showDetail').addEventListener('click', showDetailPage);
+document.getElementById('showBoth').addEventListener('click', showBothPages);
 
-  // Init: render alles en start met Admin zichtbaar
-  function init() {
-    renderActiviteiten(document.getElementById('adminActiviteiten'), activiteiten);
-    renderActiviteiten(document.getElementById('detailActiviteiten'), activiteiten);
-    renderReizen(document.getElementById('adminReizen'), reizen);
-    renderReizen(document.getElementById('detailReizen'), reizen);
-    renderDeelnemersAdmin();
-    renderOverzichtFrontend();
-    renderDeelnemerFrontend();
-    showAdminPage();
-  }
-  document.addEventListener('DOMContentLoaded', init);
+// Alles in één keer renderen
+function renderAll() {
+  renderActiviteiten(document.getElementById('adminActiviteiten'), activiteiten);
+  renderActiviteiten(document.getElementById('detailActiviteiten'), activiteiten);
+  renderReizen(document.getElementById('adminReizen'), reizen);
+  renderReizen(document.getElementById('detailReizen'), reizen);
+  renderDeelnemersAdmin();
+  renderOverzichtFrontend();
+  renderDeelnemerFrontend();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderAll();
+  showAdminPage();
+});
 </script>
 </body>
 </html>
