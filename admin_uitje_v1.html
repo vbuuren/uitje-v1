@@ -5,24 +5,110 @@
   <title>Uitje – Admin + Detail</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Optische scheiding */
-    #adminPage {
-      background: #f9f9f9;
-      padding: 20px;
-      border-bottom: 5px solid #ccc;
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #ececec;
     }
-    #detailPage {
+
+    h1 {
+      margin-top: 0;
+    }
+
+    .section {
       background: #fff;
       padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
+
+    #adminPage {
+      background: #f4f8fb;
+      padding: 30px;
+    }
+
+    #detailPage {
+      background: #fff;
+      padding: 30px;
+    }
+
     hr.page-sep {
-      margin: 50px 0;
+      margin: 0;
       border: 0;
-      border-top: 5px solid #ccc;
+      border-top: 8px solid #ccc;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    input, textarea, button {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    button {
+      background: #0078d4;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #005a9e;
+    }
+
+    .overview-item {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .prijs {
+      font-weight: bold;
+      color: #007700;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    /* Navigatiebalk */
+    .nav-bar {
+      background: #333;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .nav-bar button {
+      background: #0078d4;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      margin: 0 5px;
+    }
+
+    .nav-bar button:hover {
+      background: #005a9e;
     }
   </style>
 </head>
 <body>
+
+<!-- Navigatieknoppen -->
+<div class="nav-bar">
+  <button id="showAdmin">Beheerpagina</button>
+  <button id="showDetail">Detailpagina</button>
+  <button id="showBoth">Toon beide</button>
+</div>
 
 <!-- ===== ADMIN DEEL ===== -->
 <div id="adminPage">
@@ -30,87 +116,71 @@
 
   <!-- Algemene gegevens -->
   <div class="section" id="sectAlgemeen">
-    <h2><img src="https://img.icons8.com/ios-glyphs/30/000000/info.png"> Algemene gegevens</h2>
-    <div class="full">
-      <label class="smalltext">Titel<br>
-        <input type="text" id="algTitel" class="input">
-      </label>
-    </div>
-    <div class="full">
-      <label class="smalltext">Datum<br>
-        <input type="date" id="algDatum" class="input">
-      </label>
-    </div>
-    <div class="full">
-      <label class="smalltext">Algemene notitie<br>
-        <textarea id="algemeneNotitie" class="input" rows="2"
-          placeholder="Bijv.: Let op: Eten en extra's zoals drank, parkeren, souvenirs worden achteraf berekend tenzij de prijs vooraf bekend is."></textarea>
-      </label>
-    </div>
+    <h2>Algemene gegevens</h2>
+    <label>Titel
+      <input type="text" value="Dagje Rotterdam">
+    </label>
+    <label>Datum
+      <input type="date" value="2025-09-20">
+    </label>
+    <label>Algemene notitie
+      <textarea rows="2">Let op: Eten en extra's zoals drank, parkeren, souvenirs worden achteraf berekend tenzij de prijs vooraf bekend is.</textarea>
+    </label>
   </div>
 
   <!-- Verzamelpunt -->
   <div class="section" id="sectVerzamelpunt">
-    <h2><img src="https://img.icons8.com/ios-glyphs/30/000000/marker.png"> Verzamelpunt & Tijd</h2>
-    <!-- velden voor verzamelpunt -->
+    <h2>Verzamelpunt & Tijd</h2>
+    <input type="text" value="Centraal Station Rotterdam">
+    <input type="time" value="09:30">
   </div>
 
   <!-- Activiteiten invoer -->
   <div class="section" id="sectActiviteit">
-    <h2><img src="https://img.icons8.com/ios-glyphs/30/000000/flag.png"> Activiteit toevoegen</h2>
-    <div class="half">
-      <label class="smalltext">Naam<br>
-        <input type="text" id="activiteitNaam" class="input">
-      </label>
-    </div>
-    <div class="half">
-      <label class="smalltext">Prijs p.p.<br>
-        <input type="number" id="activiteitPrijs" class="input" step="0.01">
-      </label>
-    </div>
-    <div class="half">
-      <label class="smalltext">Starttijd<br>
-        <input type="time" id="activiteitStart" class="input smalltime">
-      </label>
-    </div>
-    <div class="half">
-      <label class="smalltext">Eindtijd<br>
-        <input type="time" id="activiteitEind" class="input smalltime">
-      </label>
-    </div>
-    <div class="full">
-      <label class="smalltext">URL<br>
-        <input type="url" id="activiteitUrl" class="input" placeholder="https://...">
-      </label>
-    </div>
-    <div style="display:flex;justify-content:flex-end;gap:8px">
-      <button class="btn" id="saveActiviteitBtn" type="button">Opslaan activiteit</button>
-    </div>
+    <h2>Activiteit toevoegen</h2>
+    <input type="text" placeholder="Naam activiteit">
+    <input type="number" placeholder="Prijs p.p.">
+    <input type="time">
+    <input type="time">
+    <input type="url" placeholder="https://...">
+    <button>Opslaan activiteit</button>
   </div>
 
   <!-- Overzicht activiteiten -->
   <div class="section" id="sectOverzichtActiviteit">
     <h2>Overzicht activiteiten</h2>
-    <div id="overzichtActiviteiten"></div>
+    <div class="overview-item">
+      <span class="naam">Rondvaart door de haven</span> – <span>10:00 - 11:30</span> <span class="prijs">€ 15,00 p.p.</span>
+    </div>
+    <div class="overview-item">
+      <span class="naam">Bezoek Euromast</span> – <span>12:00 - 13:00</span> <span class="prijs">€ 10,00 p.p.</span>
+    </div>
   </div>
 
   <!-- Reizen invoer -->
   <div class="section" id="sectReizen">
-    <h2><img class="icon" src="https://img.icons8.com/ios-glyphs/30/000000/car.png" alt="car"/> Reizen</h2>
-    <!-- velden voor Van, Naar, Tijden, Afstand, Duur, Link -->
-    <div style="display:flex;justify-content:flex-end;gap:8px">
-      <button class="btn" id="addReisBtn" type="button">Voeg reis toe</button>
-    </div>
-    <datalist id="locaties"></datalist>
-    <div class="overview" id="overzichtReizen">
-      <div class="overview-empty">Nog geen reizen toegevoegd.</div>
+    <h2>Reizen</h2>
+    <input placeholder="Van">
+    <input placeholder="Naar">
+    <input type="time">
+    <input type="time">
+    <input type="number" placeholder="Afstand (km)">
+    <input placeholder="Duur">
+    <input type="url" placeholder="Google route link">
+    <button>Voeg reis toe</button>
+    <div class="overview">
+      <div class="overview-item">Centraal Station → Haven – 09:30 - 10:00 – 5 km – 15 min</div>
     </div>
   </div>
 
   <!-- Deelnemers -->
   <div class="section" id="sectDeelnemers">
     <h2>Deelnemers</h2>
-    <!-- deelnemersbeheer -->
+    <ul>
+      <li>Marcel</li>
+      <li>Petra</li>
+      <li>Jan</li>
+    </ul>
   </div>
 </div>
 
@@ -122,42 +192,75 @@
 
   <!-- Verzamelpunt -->
   <div class="section">
-    <h2><img src="https://img.icons8.com/ios-glyphs/30/000000/marker.png"> Verzamelpunt & Tijd</h2>
-    <p id="detailVerzamelPunt"></p>
-    <p id="detailVerzamelTijd"></p>
-    <p><a id="detailLocatieLink" class="map-link" target="_blank">📍 Bekijk locatie in Google Maps</a></p>
+    <h2>Verzamelpunt & Tijd</h2>
+    <p>Centraal Station Rotterdam</p>
+    <p>09:30</p>
+    <p><a href="#">📍 Bekijk locatie in Google Maps</a></p>
   </div>
 
   <!-- Activiteiten -->
   <div class="section">
-    <h2><img src="https://img.icons8.com/ios-glyphs/30/000000/flag.png"> Wat we gaan doen</h2>
-    <div id="detailActiviteiten"></div>
+    <h2>Wat we gaan doen</h2>
+    <div class="overview-item">Rondvaart door de haven – 10:00 - 11:30 – € 15,00 p.p.</div>
+    <div class="overview-item">Bezoek Euromast – 12:00 - 13:00 – € 10,00 p.p.</div>
   </div>
 
   <!-- Reizen -->
-  <div class="section" id="sectReizenDetail">
-    <h2><img class="icon" src="https://img.icons8.com/ios-glyphs/30/000000/car.png" alt="car"/> Reizen</h2>
-    <div id="detailReizen"></div>
+  <div class="section">
+    <h2>Reizen</h2>
+    <div class="overview-item">Centraal Station → Haven – 09:30 - 10:00 – 5 km – 15 min</div>
+    <div class="overview-item">Haven → Euromast – 11:30 - 12:00 – 3 km – 10 min</div>
   </div>
 
   <!-- Google Maps route -->
   <div class="section">
-    <p><a id="detailRoute" class="map-link" target="_blank">📍 Bekijk volledige route in Google Maps</a></p>
+    <p><a href="#">📍 Bekijk volledige route in Google Maps</a></p>
   </div>
 
   <!-- Standaardnotitie -->
   <div class="section">
-    <p id="ondersteNotitie">
-      Let op: Eten en extra's zoals drank, parkeren, souvenirs worden achteraf berekend tenzij de prijs vooraf bekend is.
-    </p>
+    <p>Let op: Eten en extra's zoals drank, parkeren, souvenirs worden achteraf berekend tenzij de prijs vooraf bekend is.</p>
   </div>
 
   <!-- Deelnemers -->
   <div class="section">
     <h2>Wie gaan er mee</h2>
-    <div id="detailDeelnemers"></div>
+    <ul>
+      <li>Marcel</li>
+      <li>Petra</li>
+      <li>Jan</li>
+    </ul>
   </div>
 </div>
 
-</body>
-</html>
+<script>
+  const adminPage = document.getElementById('adminPage');
+  const detailPage = document.getElementById('detailPage');
+  const pageSep = document.querySelector('.page-sep');
+
+  function showAdminPage() {
+    adminPage.style.display = 'block';
+    detailPage.style.display = 'none';
+    if (pageSep) pageSep.style.display = 'none';
+  }
+
+  function showDetailPage() {
+    adminPage.style.display = 'none';
+    detailPage.style.display = 'block';
+    if (pageSep) pageSep.style.display = 'none';
+  }
+
+  function showBothPages() {
+    adminPage.style.display = 'block';
+    detailPage.style.display = 'block';
+    if (pageSep) pageSep.style.display = 'block';
+  }
+
+  document.getElementById('showAdmin').add
+    document.getElementById('showAdmin').addEventListener('click', showAdminPage);
+  document.getElementById('showDetail').addEventListener('click', showDetailPage);
+  document.getElementById('showBoth').addEventListener('click', showBothPages);
+
+  // Start met Admin zichtbaar
+  showAdminPage();
+</script>
