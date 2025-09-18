@@ -394,27 +394,32 @@ function updateDetail(){
   document.getElementById('detailLocatieLink').href=document.getElementById('gmVerzamelLink').value||'#';
   document.getElementById('detailLocatieLink').textContent='📍 Bekijk locatie in Google Maps';
   document.getElementById('detailRoute').href=document.getElementById('gmVerzamelLink').value||'#';
-  // Activiteiten
+// Activiteiten
 const actDiv = document.getElementById('detailActiviteiten');
 actDiv.innerHTML = '';
 
 activiteiten.forEach(act => {
   const div = document.createElement('div');
   div.className = 'evenement';
+
+  if (act.url) {
+    div.style.cursor = 'pointer';
+    div.addEventListener('click', () => window.open(act.url, '_blank'));
+  }
+
   div.innerHTML = `
     <div class="info">
       <div class="naam"><img src="https://img.icons8.com/ios-glyphs/24/000000/flag.png"> ${act.naam}</div>
-      ${act.start
-        ? `<div><span class="starttijd">${act.start}</span> - <span class="eindtijd">${act.eind}</span></div>`
-        : ''}
+      ${act.start ? `<div><span class="starttijd">${act.start}</span> - <span class="eindtijd">${act.eind}</span></div>` : ''}
     </div>
     ${act.prijs > 0 ? `<div class="prijs">€ ${act.prijs.toFixed(2)} p.p.</div>` : ''}
   `;
   actDiv.appendChild(div);
 });
 
-// Na renderen activiteiten: vul datalist voor Reizen
+// Update datalist voor Reizen
 updateLocatiesDatalist();
+
 
   // Deelnemers mee
   const meeList=document.getElementById('mee'); let meeText=[]; meeList.querySelectorAll('.drag-item').forEach(d=>meeText.push(d.textContent));
@@ -448,13 +453,152 @@ function updateLocatiesDatalist() {
     opt.value = loc;
     datalist.appendChild(opt);
   });
+// Init
+createDeelnemers();
+updateDetail();
+
+function updateLocatiesDatalist() {
+  const locatiesSet = new Set();
+  document.querySelectorAll('#detailActiviteiten .evenement .naam').forEach(el => {
+    const naam = el.textContent.replace(/^\s*🏁\s*/, '').trim();
+    if (naam) locatiesSet.add(naam);
+  });
+  const datalist = document.getElementById('locaties');
+  if (!datalist) return;
+  datalist.innerHTML = '';
+  locatiesSet.forEach(loc => {
+    const opt = document.createElement('option');
+    opt.value = loc;
+    datalist.appendChild(opt);
+  });
+} // <-- functie sluiten
+
+// Reizen
+function renderReizen(reizen) {
+  const overzicht = document.getElementById('detailReizen');
+  overzicht.innerHTML = '';
+
+  if (!reizen || !reizen.length) {
+    overzicht.innerHTML = '<div class="overview-empty">Nog geen reizen toegevoegd.</div>';
+    return;
+  }
+
+  // Sorteer op begintijd
+  reizen.sort((a, b) => (a.tijdVan || '').localeCompare(b.tijdVan || ''));
+
+  reizen.forEach((r, index) => {
+    const div = document.createElement('div');
+    div.className = 'overview-item';
+
+    div.innerHTML = `
+      <span class="naam">${r.van} → ${r.naar}</span>
+      <span>${r.tijdVan || ''} - ${r.tijdTot || ''}</span>
+      <span>${r.afstand ? r.afstand + ' km' : ''}</span>
+      <span>${r.duur || ''}</span>
+      ${r.link ? `<a href="${r.link}" target="_blank">Route</a>` : ''}
+      <button class="iconbtn edit" data-index="${index}">✏️</button>
+      <button class="iconbtn remove" data-index="${index}">🗑️</button>
+    `;
+    overzicht.appendChild(div);
+  });
 }
+
+// Event-listener voor "Voeg reis toe"
+document.getElementById('addReisBtn').addEventListener('click', function() {
+  const van = document.getElementById('reisVan').value.trim();
+  const naar = document.getElementById('reisNaar').value.trim();
+  let tijdVan = document.getElementById('reisTijdVan').value;
+  let tijdTot = document.getElementById('reisTijdTot').value;
+  const afstand = document.getElementById('reisAfstand').value.trim();
+  const duur = document.getElementById('reisDuur').value.trim();
+  const link = document.getElementById('reisRouteLink').value.trim();
+
+  // Fallback-tijden
+  if (!tijdVan || !tijdTot) {
+    const activiteiten = Array.from(document.querySelectorAll('#detailActiviteiten .evenement'));
+    const idxVan = activiteiten.findIndex(item => item.querySelector('.naam').textContent.trim() === van);
+    const idxNaar = activiteiten.findIndex(item => item.querySelector('.naam').textContent.trim() === naar);
+
+    if (!tijdVan && idxVan > -1) {
+      tijdVan = activiteiten[idxVan].querySelector('.eindtijd')?.textContent || '';
+    }
+    if (!tijdTot && idxNaar > -1) {
+      tijdTot = activiteiten[idxNaar].querySelector('.starttijd')?.textContent || '';
+    }
+  }
+
+  if (!window.reizen) window.reizen = [];
+  window.reizen.push({ van, naar, tijdVan, tijdTot, afstand, duur, link });
+  renderReizen(window.reizen);
+});
+
+// Event-delegatie voor edit/remove in Reizen
+document.getElementById('detailReizen').addEventListener('click', function(e) {
+  if (!window.reizen) return;
+  const index = e.target.dataset.index;
+  if (e.target.classList.contains('remove')) {
+    window.reizen.splice(index, 1);
+    renderReizen(window.reizen);
+  }
+  if (e.target.classList.contains('edit')) {
+    const r = window.reizen[index];
+    document.getElementById('reisVan').value = r.van;
+    document.getElementById('reisNaar').value = r.naar;
+    document.getElementById('reisTijdVan').value = r.tijdVan;
+    document.getElementById('reisTijdTot').value = r.tijdTot;
+    document.getElementById('reisAfstand').value = r.afstand;
+    document.getElementById('reisDuur').value = r.duur;
+    document.getElementById('reisRouteLink').value = r.link;
+    window.reizen.splice(index, 1);
+    renderReizen(window.reizen);
+  }
+});
+
+// --- Opslaan en laden van reizen ---
+
+// Sla reizen op in localStorage
+function saveReizen() {
+  localStorage.setItem('reizen', JSON.stringify(window.reizen || []));
+}
+
+// Laad reizen uit localStorage
+function loadReizen() {
+  const data = localStorage.getItem('reizen');
+  if (data) {
+    try {
+      window.reizen = JSON.parse(data);
+    } catch (e) {
+      console.error('Fout bij laden reizen:', e);
+      window.reizen = [];
+    }
+  } else {
+    window.reizen = [];
+  }
+  renderReizen(window.reizen);
+}
+
+// Pas bestaande functies aan om automatisch op te slaan
+const origineleAddReis = document.getElementById('addReisBtn').onclick;
+document.getElementById('addReisBtn').addEventListener('click', function() {
+  saveReizen();
+});
+
+document.getElementById('detailReizen').addEventListener('click', function(e) {
+  if (e.target.classList.contains('remove') || e.target.classList.contains('edit')) {
+    saveReizen();
+  }
+});
+
+// Laad reizen bij opstart
+loadReizen();
+
 
 </script>
 <footer class="footer">&copy; 2025 De Stichting | <a href="#">Algemene Voorwaarden</a> · v3</footer>
 
 </body>
 </html>
+
 
 
 
