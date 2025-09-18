@@ -11,9 +11,7 @@
       background: #ececec;
     }
 
-    h1 {
-      margin-top: 0;
-    }
+    h1 { margin: 0 0 16px 0; }
 
     .section {
       background: #fff;
@@ -23,15 +21,8 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
 
-    #adminPage {
-      background: #f4f8fb;
-      padding: 30px;
-    }
-
-    #detailPage {
-      background: #fff;
-      padding: 30px;
-    }
+    #adminPage { background: #f4f8fb; padding: 30px; }
+    #detailPage { background: #fff; padding: 30px; }
 
     hr.page-sep {
       margin: 0;
@@ -39,10 +30,7 @@
       border-top: 8px solid #ccc;
     }
 
-    label {
-      display: block;
-      margin-bottom: 10px;
-    }
+    label { display: block; margin-bottom: 10px; }
 
     input, textarea, button {
       width: 100%;
@@ -59,32 +47,28 @@
       border: none;
       cursor: pointer;
     }
+    button:hover { background: #005a9e; }
 
-    button:hover {
-      background: #005a9e;
-    }
-
+    .overview { border: 1px solid #e5e5e5; border-radius: 6px; overflow: hidden; }
     .overview-item {
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
+      padding: 10px 12px;
+      border-bottom: 1px solid #eee;
+      background: #fff;
     }
+    .overview-item:last-child { border-bottom: none; }
 
-    .prijs {
-      font-weight: bold;
-      color: #007700;
-    }
-
-    ul {
-      padding-left: 20px;
-    }
+    .clickable { cursor: pointer; }
+    .muted { color: #666; font-size: 13px; }
 
     /* Navigatiebalk */
     .nav-bar {
       background: #333;
       padding: 10px;
       text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
-
     .nav-bar button {
       background: #0078d4;
       color: white;
@@ -95,9 +79,16 @@
       font-size: 14px;
       margin: 0 5px;
     }
+    .nav-bar button:hover { background: #005a9e; }
 
-    .nav-bar button:hover {
-      background: #005a9e;
+    /* Kleine helper voor inputs-lay-out in Admin (alleen visueel) */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    @media (max-width: 700px) {
+      .grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -118,62 +109,95 @@
   <div class="section" id="sectAlgemeen">
     <h2>Algemene gegevens</h2>
     <label>Titel
-      <input type="text" value="Dagje Rotterdam">
+      <input type="text" id="admTitel" value="Dagje Rotterdam">
     </label>
-    <label>Datum
-      <input type="date" value="2025-09-20">
+    <div class="grid">
+      <label>Datum
+        <input type="date" id="admDatum" value="2025-09-20">
+      </label>
+      <label>Verzamelpunt tijd
+        <input type="time" id="admVerzamelTijd" value="09:30">
+      </label>
+    </div>
+    <label>Verzamelpunt locatie
+      <input type="text" id="admVerzamelLocatie" value="Centraal Station Rotterdam">
     </label>
     <label>Algemene notitie
-      <textarea rows="2">Let op: Eten en extra's zoals drank, parkeren, souvenirs worden achteraf berekend tenzij de prijs vooraf bekend is.</textarea>
+      <textarea id="admNotitie" rows="2">Let op: Eten en extra's zoals drank, parkeren, souvenirs worden achteraf berekend tenzij de prijs vooraf bekend is.</textarea>
     </label>
   </div>
 
-  <!-- Verzamelpunt -->
-  <div class="section" id="sectVerzamelpunt">
-    <h2>Verzamelpunt & Tijd</h2>
-    <input type="text" value="Centraal Station Rotterdam">
-    <input type="time" value="09:30">
-  </div>
-
-  <!-- Activiteiten invoer -->
+  <!-- Activiteit toevoegen (alleen visueel) -->
   <div class="section" id="sectActiviteit">
     <h2>Activiteit toevoegen</h2>
-    <input type="text" placeholder="Naam activiteit">
-    <input type="number" placeholder="Prijs p.p.">
-    <input type="time">
-    <input type="time">
-    <input type="url" placeholder="https://...">
-    <button>Opslaan activiteit</button>
+    <div class="grid">
+      <label>Naam
+        <input type="text" placeholder="Naam activiteit">
+      </label>
+      <label>Prijs p.p.
+        <input type="number" step="0.01" placeholder="Bijv. 12,50">
+      </label>
+      <label>Starttijd
+        <input type="time">
+      </label>
+      <label>Eindtijd
+        <input type="time">
+      </label>
+      <label class="full">URL
+        <input type="url" placeholder="https://...">
+      </label>
+    </div>
+    <div style="margin-top:10px">
+      <button type="button">Opslaan activiteit</button>
+    </div>
   </div>
 
-  <!-- Overzicht activiteiten -->
+  <!-- Overzicht activiteiten (ADMIN) -->
   <div class="section" id="sectOverzichtActiviteit">
     <h2>Overzicht activiteiten</h2>
-    <div class="overview-item">
-      <span class="naam">Rondvaart door de haven</span> – <span>10:00 - 11:30</span> <span class="prijs">€ 15,00 p.p.</span>
-    </div>
-    <div class="overview-item">
-      <span class="naam">Bezoek Euromast</span> – <span>12:00 - 13:00</span> <span class="prijs">€ 10,00 p.p.</span>
-    </div>
+    <div id="adminActiviteiten" class="overview"></div>
+    <p class="muted" style="margin-top:8px">Rijen tonen naam, tijd en prijs met “ | ” en icoontjes. Klikbaar als er een URL is.</p>
   </div>
 
-  <!-- Reizen invoer -->
-  <div class="section" id="sectReizen">
+  <!-- Reizen toevoegen (alleen visueel) -->
+  <div class="section" id="sectReizenAdmin">
     <h2>Reizen</h2>
-    <input placeholder="Van">
-    <input placeholder="Naar">
-    <input type="time">
-    <input type="time">
-    <input type="number" placeholder="Afstand (km)">
-    <input placeholder="Duur">
-    <input type="url" placeholder="Google route link">
-    <button>Voeg reis toe</button>
-    <div class="overview">
-      <div class="overview-item">Centraal Station → Haven – 09:30 - 10:00 – 5 km – 15 min</div>
+    <div class="grid">
+      <label>Van
+        <input type="text" placeholder="Bijv. Centraal Station">
+      </label>
+      <label>Naar
+        <input type="text" placeholder="Bijv. Haven">
+      </label>
+      <label>Tijd van
+        <input type="time">
+      </label>
+      <label>Tijd tot
+        <input type="time">
+      </label>
+      <label>Afstand (km)
+        <input type="number" step="0.1" placeholder="Bijv. 5">
+      </label>
+      <label>Duur
+        <input type="text" placeholder="Bijv. 15 min">
+      </label>
+      <label class="full">Route-link
+        <input type="url" placeholder="https://maps.google.com/...">
+      </label>
+    </div>
+    <div style="margin-top:10px">
+      <button type="button">Voeg reis toe</button>
     </div>
   </div>
 
-  <!-- Deelnemers -->
+  <!-- Overzicht reizen (ADMIN) -->
+  <div class="section">
+    <h2>Overzicht reizen</h2>
+    <div id="adminReizen" class="overview"></div>
+    <p class="muted" style="margin-top:8px">Rijen tonen route, tijd, afstand, duur en een klikbare route-link.</p>
+  </div>
+
+  <!-- Deelnemers (alleen visueel) -->
   <div class="section" id="sectDeelnemers">
     <h2>Deelnemers</h2>
     <ul>
@@ -193,36 +217,34 @@
   <!-- Verzamelpunt -->
   <div class="section">
     <h2>Verzamelpunt & Tijd</h2>
-    <p>Centraal Station Rotterdam</p>
-    <p>09:30</p>
-    <p><a href="#">📍 Bekijk locatie in Google Maps</a></p>
+    <p id="detailVerzamelPunt">Centraal Station Rotterdam</p>
+    <p id="detailVerzamelTijd">09:30</p>
+    <p><a id="detailLocatieLink" href="#" target="_blank">📍 Bekijk locatie in Google Maps</a></p>
   </div>
 
-  <!-- Activiteiten -->
+  <!-- Activiteiten (DETAIL) -->
   <div class="section">
     <h2>Wat we gaan doen</h2>
-    <div class="overview-item">Rondvaart door de haven – 10:00 - 11:30 – € 15,00 p.p.</div>
-    <div class="overview-item">Bezoek Euromast – 12:00 - 13:00 – € 10,00 p.p.</div>
+    <div id="detailActiviteiten" class="overview"></div>
   </div>
 
-  <!-- Reizen -->
+  <!-- Reizen (DETAIL) -->
   <div class="section">
     <h2>Reizen</h2>
-    <div class="overview-item">Centraal Station → Haven – 09:30 - 10:00 – 5 km – 15 min</div>
-    <div class="overview-item">Haven → Euromast – 11:30 - 12:00 – 3 km – 10 min</div>
+    <div id="detailReizen" class="overview"></div>
   </div>
 
-  <!-- Google Maps route -->
+  <!-- Volledige route-link -->
   <div class="section">
-    <p><a href="#">📍 Bekijk volledige route in Google Maps</a></p>
+    <p><a id="detailRoute" href="#" target="_blank">📍 Bekijk volledige route in Google Maps</a></p>
   </div>
 
   <!-- Standaardnotitie -->
   <div class="section">
-    <p>Let op: Eten en extra's zoals drank, parkeren, souvenirs worden achteraf berekend tenzij de prijs vooraf bekend is.</p>
+    <p id="ondersteNotitie">Let op: Eten en extra's zoals drank, parkeren, souvenirs worden achteraf berekend tenzij de prijs vooraf bekend is.</p>
   </div>
 
-  <!-- Deelnemers -->
+  <!-- Deelnemers (DETAIL) -->
   <div class="section">
     <h2>Wie gaan er mee</h2>
     <ul>
@@ -234,6 +256,116 @@
 </div>
 
 <script>
+  // Dummy-data die zowel Admin- als Detail-overzichten voedt
+  const activiteiten = [
+    { naam: 'Rondvaart door de haven', start: '10:00', eind: '11:30', prijs: 15, url: 'https://voorbeeld.nl/rondvaart' },
+    { naam: 'Bezoek Euromast', start: '12:00', eind: '13:00', prijs: 10, url: 'https://voorbeeld.nl/euromast' },
+    { naam: 'Markthal pauze', start: '13:15', eind: '14:00', prijs: 0, url: '' }
+  ];
+
+  const reizen = [
+    { van: 'Centraal Station', naar: 'Haven', tijdVan: '09:30', tijdTot: '10:00', afstand: 5, duur: '15 min', link: 'https://maps.google.com/?q=Rotterdam' },
+    { van: 'Haven', naar: 'Euromast', tijdVan: '11:30', tijdTot: '12:00', afstand: 3, duur: '10 min', link: 'https://maps.google.com/?q=Euromast' }
+  ];
+
+  // Helpers
+  function euroBedrag(n) {
+    const v = Number(n || 0);
+    return v.toFixed(2).replace('.', ',');
+  }
+
+  // 1) ACTIVITEITEN – ADMIN OVERZICHT
+  function renderActiviteitenAdmin(list) {
+    const el = document.getElementById('adminActiviteiten');
+    el.innerHTML = '';
+    if (!list || !list.length) {
+      el.innerHTML = '<div class="overview-item">Nog geen activiteiten toegevoegd.</div>';
+      return;
+    }
+    // sorteer op starttijd (optioneel)
+    list.slice().sort((a,b) => (a.start||'').localeCompare(b.start||'')).forEach(act => {
+      const seg = [];
+      seg.push(`🏁 ${act.naam}`);
+      if (act.start || act.eind) seg.push(`🕒 ${(act.start||'')}${(act.start && act.eind) ? ' - ' : ''}${(act.eind||'')}`);
+      if (act.prijs && Number(act.prijs) > 0) seg.push(`💶 € ${euroBedrag(act.prijs)} p.p.`);
+      if (act.url) seg.push('🔗 Link');
+      const row = document.createElement('div');
+      row.className = 'overview-item' + (act.url ? ' clickable' : '');
+      row.innerHTML = seg.join(' | ');
+      if (act.url) row.addEventListener('click', () => window.open(act.url, '_blank'));
+      el.appendChild(row);
+    });
+  }
+
+  // 2) ACTIVITEITEN – DETAIL OVERZICHT
+  function renderActiviteitenDetail(list) {
+    const el = document.getElementById('detailActiviteiten');
+    el.innerHTML = '';
+    if (!list || !list.length) {
+      el.innerHTML = '<div class="overview-item">Nog geen activiteiten toegevoegd.</div>';
+      return;
+    }
+    list.slice().sort((a,b) => (a.start||'').localeCompare(b.start||'')).forEach(act => {
+      const seg = [];
+      seg.push(`🏁 ${act.naam}`);
+      if (act.start || act.eind) seg.push(`🕒 ${(act.start||'')}${(act.start && act.eind) ? ' - ' : ''}${(act.eind||'')}`);
+      if (act.prijs && Number(act.prijs) > 0) seg.push(`💶 € ${euroBedrag(act.prijs)} p.p.`);
+      if (act.url) seg.push('🔗 Link');
+      const row = document.createElement('div');
+      row.className = 'overview-item' + (act.url ? ' clickable' : '');
+      row.innerHTML = seg.join(' | ');
+      if (act.url) row.addEventListener('click', () => window.open(act.url, '_blank'));
+      el.appendChild(row);
+    });
+  }
+
+  // 3) REIZEN – ADMIN OVERZICHT
+  function renderReizenAdmin(list) {
+    const el = document.getElementById('adminReizen');
+    el.innerHTML = '';
+    if (!list || !list.length) {
+      el.innerHTML = '<div class="overview-item">Nog geen reizen toegevoegd.</div>';
+      return;
+    }
+    list.slice().sort((a,b) => (a.tijdVan||'').localeCompare(b.tijdVan||'')).forEach(r => {
+      const seg = [];
+      const route = [r.van, r.naar].filter(Boolean).join(' → ');
+      if (route) seg.push(`🚗 ${route}`);
+      if (r.tijdVan || r.tijdTot) seg.push(`🕒 ${(r.tijdVan||'')}${(r.tijdVan && r.tijdTot) ? ' - ' : ''}${(r.tijdTot||'')}`);
+      if (r.afstand) seg.push(`📏 ${String(r.afstand).replace('.', ',')} km`);
+      if (r.duur) seg.push(`⏱️ ${r.duur}`);
+      if (r.link) seg.push(`<a href="${r.link}" target="_blank">🔗 Route</a>`);
+      const row = document.createElement('div');
+      row.className = 'overview-item';
+      row.innerHTML = seg.join(' | ');
+      el.appendChild(row);
+    });
+  }
+
+  // 4) REIZEN – DETAIL OVERZICHT
+  function renderReizenDetail(list) {
+    const el = document.getElementById('detailReizen');
+    el.innerHTML = '';
+    if (!list || !list.length) {
+      el.innerHTML = '<div class="overview-item">Nog geen reizen toegevoegd.</div>';
+      return;
+    }
+    list.slice().sort((a,b) => (a.tijdVan||'').localeCompare(b.tijdVan||'')).forEach(r => {
+      const seg = [];
+      const route = [r.van, r.naar].filter(Boolean).join(' → ');
+      if (route) seg.push(`🚗 ${route}`);
+      if (r.tijdVan || r.tijdTot) seg.push(`🕒 ${(r.tijdVan||'')}${(r.tijdVan && r.tijdTot) ? ' - ' : ''}${(r.tijdTot||'')}`);
+      if (r.afstand) seg.push(`📏 ${String(r.afstand).replace('.', ',')} km`);
+      if (r.duur) seg.push(`⏱️ ${r.duur}`);
+      if (r.link) seg.push(`<a href="${r.link}" target="_blank">🔗 Route</a>`);
+      const row = document.createElement('div');
+      row.className = 'overview-item';
+      row.innerHTML = seg.join(' | ');
+      el.appendChild(row);
+    });
+  }
+
+  // 5) Navigatie (schakelen tussen Admin/Detail)
   const adminPage = document.getElementById('adminPage');
   const detailPage = document.getElementById('detailPage');
   const pageSep = document.querySelector('.page-sep');
@@ -243,27 +375,30 @@
     detailPage.style.display = 'none';
     if (pageSep) pageSep.style.display = 'none';
   }
-
   function showDetailPage() {
     adminPage.style.display = 'none';
     detailPage.style.display = 'block';
     if (pageSep) pageSep.style.display = 'none';
   }
-
   function showBothPages() {
     adminPage.style.display = 'block';
     detailPage.style.display = 'block';
     if (pageSep) pageSep.style.display = 'block';
   }
 
-  document.getElementById('showAdmin').add
-    document.getElementById('showAdmin').addEventListener('click', showAdminPage);
+  document.getElementById('showAdmin').addEventListener('click', showAdminPage);
   document.getElementById('showDetail').addEventListener('click', showDetailPage);
   document.getElementById('showBoth').addEventListener('click', showBothPages);
 
-  // Start met Admin zichtbaar
-  showAdminPage();
+  // 6) Init: render alle overzichten en start met Admin zichtbaar
+  function init() {
+    renderActiviteitenAdmin(activiteiten);
+    renderActiviteitenDetail(activiteiten);
+    renderReizenAdmin(reizen);
+    renderReizenDetail(reizen);
+    showAdminPage();
+  }
+  document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
-</html>  
-
+</html>
