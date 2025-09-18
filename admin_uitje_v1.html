@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Admin + Detail – Uitje Lost</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
+:root{
+  --bg:#f3efe7; --card:#fff8f0; --accent:#a1887f; --accent-dark:#5d4037; --muted:#d0bfa0;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Roboto Mono', monospace;background:var(--bg);padding:18px;display:flex;flex-direction:column;gap:40px;}
+.btn{background:var(--accent);color:white;border:none;padding:8px 12px;border-radius:10px;cursor:pointer;font-family:inherit;}
+.btn:hover{background:var(--accent-dark);}
+.btn-small{padding:4px 8px;font-size:0.85rem;}
+.button {padding:12px 20px;background-color:var(--accent);color:white;border:none;border-radius:10px;cursor:pointer;font-size:1.15rem;font-family:inherit;transition:background-color 0.25s,transform 0.2s;box-shadow:0 4px 8px rgba(0,0,0,0.2);}
+.button:hover {background-color:var(--accent-dark);transform:translateY(-2px);}
+.header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+.title{font-size:28px;color:var(--accent-dark);}
+.controls{display:flex;gap:10px;align-items:center;}
+.container{max-width:1100px;margin:0 auto;padding:20px;background:var(--card);border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.12);display:flex;flex-direction:column;gap:20px}
+.section{background:transparent;padding:0;display:flex;flex-direction:column;gap:10px}
+.section h2{display:flex;align-items:center;gap:10px;font-size:20px;color:var(--accent-dark)}
+.icon{width:24px;height:24px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.full{flex:1 1 100%}
+.half{flex:0 0 auto}
+.input, textarea{padding:8px;border-radius:8px;border:1px solid var(--muted);width:100%;font-family:inherit}
+.small{max-width:140px}
+.smalltime{max-width:110px}
+.note{font-size:13px;color:#5d4037}
+.smalltext{font-size:13px;color:#5d4037}
+.overview{border:1px solid var(--muted);border-radius:12px;padding:10px;background:#fff3e0;display:flex;flex-direction:column;gap:8px}
+.overview-item{display:flex;align-items:center;gap:8px;padding:6px;border-radius:8px;justify-content:space-between;background:#fff8f0}
+.overview-item img{width:18px;height:18px;vertical-align:middle}
+.overview-item .edit-remove{display:flex;gap:6px}
+.drag-wrap{display:flex;gap:12px;margin-top:6px}
+.drag-col{flex:1;border:1px dashed #c9bda8;border-radius:10px;padding:8px;background:#fffaf3;min-height:160px}
+.drag-col h3{margin:0 0 6px 0;font-size:14px;text-align:center}
+.drag-item{padding:6px 8px;margin:6px 0;background:var(--accent);color:white;border-radius:6px;cursor:grab;text-align:center}
+.detail{max-width:920px;margin:20px auto;background:#fff8f0;padding:28px;border-radius:18px;box-shadow:0 6px 20px rgba(0,0,0,0.25);display:flex;flex-direction:column;gap:18px}
+.detail h1{font-size:36px;color:var(--accent-dark);text-align:center;margin:0;text-shadow:1px 1px 2px rgba(0,0,0,.2)}
+.evenement{border:1px solid #d0bfa0;border-radius:12px;padding:12px;background:#fff3e0;display:flex;justify-content:space-between;align-items:center}
+.evenement .info{display:flex;flex-direction:column;gap:4px}
+.prijs{font-weight:700}
+.map-link{color:#1565c0;text-decoration:underline;cursor:pointer}
+.button-row{display:flex;gap:10px;justify-content:center}
+@media(max-width:800px){.row{flex-direction:column}.drag-wrap{flex-direction:column}.detail{margin:10px}}
+.file-list{margin-top:8px;font-size:13px}
+.warning{color:#7a4b2b;font-size:13px}
+</style>
+</head>
+<body>
+
+<!-- =================== ADMIN – UITJE AANMAKEN =================== -->
+<div class="header">
+  <div class="title">Admin – Uitje Aanmaken</div>
+  <div class="controls">
+    <button id="refreshBtn" class="btn" disabled>Ververs overzicht</button>
+    <label><input id="actief" type="checkbox"> Actief</label>
+  </div>
+</div>
+
+<div class="container" id="formContainer">
+
+  <!-- Algemeen -->
+  <div class="section" id="sectAlgemeen">
+    <h2><img class="icon" src="https://img.icons8.com/ios-glyphs/30/000000/info.png"/> Algemeen</h2>
+    <div class="row">
+      <div class="full"><label class="smalltext">Titel uitje<br><input id="titel" class="input" type="text" placeholder="Bijv. Lost"></label></div>
+      <div class="half"><label class="smalltext">Datum uitje<br><input id="datum" class="input" type="date"></label></div>
+      <div class="half"><label class="smalltext">Inschrijven tot<br><input id="inschrijvenTot" class="input" type="date"></label></div>
+      <div class="half"><label class="smalltext">Annuleren tot<br><input id="annulerenTot" class="input" type="date"></label></div>
+      <div class="full"><label class="smalltext">Google Maps link verzamelpunt<br><input id="gmVerzamelLink" class="input" type="text" placeholder="https://..."></label></div>
+      <div class="full"><label class="smalltext">Algemene notitie<br><textarea id="algNotitie" class="input" rows="2">Let op: Eten en extra's zoals drank, parkeren, souvenirs worden achteraf berekend tenzij de prijs vooraf bekend is.</textarea></label></div>
+      <div style="display:flex;justify-content:flex-end"><button class="btn" onclick="saveAlgemeen()">Opslaan Algemeen</button></div>
+    </div>
+  </div>
+
+  <!-- Verzamelpunt -->
+  <div class="section" id="sectVerzamelpunt">
+    <h2><img class="icon" src="https://img.icons8.com/ios-glyphs/30/000000/marker.png"/> Verzamelpunt</h2>
+    <div class="row">
+      <div class="full"><label class="smalltext">Locatie (naam)<br><input id="verzamelLocatie" class="input" type="text" placeholder="Bijv. Villa Bretil"></label></div>
+      <div class="half"><label class="smalltext">Tijd verzamelen<br><input id="verzamelTijd" class="input smalltime" type="time"></label></div>
+      <div class="half"><label class="smalltext">Telefoon<br><input id="verzamelTelefoon" class="input" type="text"></label></div>
+      <div class="half"><label class="smalltext">Straat / Huisnummer<br><input id="verzamelStraat" class="input" type="text"></label></div>
+      <div class="half"><label class="smalltext">Postcode<br><input id="verzamelPostcode" class="input" type="text"></label></div>
+      <div class="half"><label class="smalltext">Woonplaats<br><input id="verzamelWoonplaats" class="input" type="text"></label></div>
+      <div style="display:flex;justify-content:flex-end"><button class="btn" onclick="saveVerzamel()">Opslaan Verzamelpunt</button></div>
+    </div>
+  </div>
+
+  <!-- Activiteit -->
+  <div class="section" id="sectActiviteit">
+    <h2><img class="icon" src="https://img.icons8.com/ios-glyphs/30/000000/flag.png"/> Activiteit aanmaken</h2>
+    <div class="row">
+      <div class="full"><label class="smalltext">Naam activiteit<br><input id="actNaam" class="input" type="text"></label></div>
+      <div class="full"><label class="smalltext">Adres<br><input id="actAdres" class="input" type="text"></label></div>
+      <div class="half"><label class="smalltext">Postcode<br><input id="actPostcode" class="input" type="text"></label></div>
+      <div class="half"><label class="smalltext">Woonplaats<br><input id="actWoonplaats" class="input" type="text"></label></div>
+      <div class="half"><label class="smalltext">Telefoon<br><input id="actTelefoon" class="input" type="text"></label></div>
+      <div class="half"><label class="smalltext">Starttijd<br><input id="actStarttijd" class="input smalltime" type="time"></label></div>
+      <div class="half"><label class="smalltext">Eindtijd<br><input id="actEindtijd" class="input smalltime" type="time"></label></div>
+      <div class="half"><label class="smalltext">Prijs (€)<br><input id="actPrijs" class="input small" type="number" value="0.00"></label><span class="note">bij €0,00 wordt dit automatisch nacalculatie</span></div>
+      <div class="full"><label class="smalltext">Notitie (optioneel)<br><input id="actNotitie" class="input" type="text"></label></div>
+      <div style="display:flex;justify-content:flex-end"><button class="btn" onclick="addActiviteit()">Voeg activiteit toe</button></div>
+    </div>
+  </div>
+
+  <!-- Overzicht Activiteiten met Edit/Remove -->
+  <div class="section" id="sectOverzichtActiviteit">
+    <h2><img class="icon" src="https://img.icons8.com/ios-glyphs/30/000000/list.png"/> Overzicht activiteiten</h2>
+    <div class="overview" id="overzichtActiviteiten"></div>
+  </div>
+
+  <!-- Deelnemers Drag & Drop -->
+  <div class="section">
+    <h2><img class="icon" src="https://img.icons8.com/ios-glyphs/30/000000/conference.png"/> Deelnemers</h2>
+    <div class="drag-wrap">
+      <div class="drag-col" id="nietMee"><h3>Niet mee</h3></div>
+      <div class="drag-col" id="mee"><h3>Mee</h3></div>
+      <div class="drag-col" id="geannuleerd"><h3>Geannuleerd</h3></div>
+    </div>
+  </div>
+
+  <!-- PDF Upload -->
+  <div class="section">
+    <h2><img class="icon" src="https://img.icons8.com/ios-glyphs/30/000000/upload.png"/> PDF Upload</h2>
+    <input type="file" id="pdfUpload" accept=".pdf">
+    <div class="file-list" id="pdfList"></div>
+  </div>
+
+  <div style="display:flex;justify-content:flex-end">
+    <button class="btn btn-right" onclick="saveUitje()">Opslaan Uitje</button>
+  </div>
+
+</div>
+
+<!-- =================== DETAILPAGINA =================== -->
+<div class="detail" id="detailContainer">
+<h1 id="detailTitel">Lost</h1>
+
+<!-- Knoppen inschrijven/annuleren -->
+<div class="section" id="detailButtons">
+  <button class="button" id="btnInschrijven"></button>
+  <button class="button" id="btnAnnuleren"></button>
+</div>
+
+<!-- Verzamelpunt -->
+<div class="section">
+  <h2><img src="https://img.icons8.com/ios-glyphs/30/000000/marker.png"> Verzamelpunt & Tijd</h2>
+  <p id="detailVerzamelPunt"></p>
+  <p id="detailVerzamelTijd"></p>
+  <p><a id="detailLocatieLink" class="map-link" target="_blank">📍 Bekijk locatie in Google Maps</a></p>
+</div>
+
+<!-- Activiteiten -->
+<div class="section">
+  <h2><img src="https://img.icons8.com/ios-glyphs/30/000000/flag.png"> Wat we gaan doen</h2>
+  <div id="detailActiviteiten"></div>
+</div>
+
+<!-- Google Maps route onder evenementen -->
+<div class="section">
+  <p><a id="detailRoute" class="map-link" target="_blank">📍 Bekijk volledige route in Google Maps</a></p>
+</div>
+
+<!-- Deelnemers -->
+<div class="section">
+  <h2><img src="https://img.icons8.com/ios-glyphs/30/000000/conference.png"> Deelnemers</h2>
+  <p id="detailDeelnemers"></p>
+</div>
+
+<!-- Totaalprijs -->
+<div class="section">
+  <h2><img src="https://img.icons8.com/ios-glyphs/30/000000/money.png"> Totaal te betalen</h2>
+  <p id="detailPrijs"><strong>€ 0,00 p.p.</strong></p>
+  <p style="font-size:0.85rem; line-height:1.3;"><strong>Let op:</strong><br> <span id="detailNotitie"></span></p>
+</div>
+
+<!-- Knoppen Offertes / PDF -->
+<div class="section button-row">
+  <button class="button" id="btnOffertes">Bekijk Offertes</button>
+  <button class="button" id="btnPDF">PDF downloaden</button>
+</div>
+</div>
+
+<script>
+// ====== Data ======
+let activiteiten=[], deelnemers=[
+  "Dennis Spek","John Strootman","Marcel Van Buuren","Sandra Hazenberg","Michel Van Elk",
+  "Roelie Onkruijt","Sven Zwijnenburg","Ricardo Nobbenhuis","Peter Schuiling","Jeffrey Rijken",
+  "Raymond Weeling","Joey Kellner","Mirtle Creebsburg","Coby Schellaars","Robin Lugtigheid","Ibrahim Aday"
+];
+
+// ====== Functies ======
+function addActiviteit(){
+  const naam=document.getElementById('actNaam').value.trim();
+  if(!naam){alert('Naam activiteit verplicht'); return;}
+  const prijs=parseFloat(document.getElementById('actPrijs').value||0);
+  const start=document.getElementById('actStarttijd').value;
+  const eind=document.getElementById('actEindtijd').value;
+  const notitie=document.getElementById('actNotitie').value;
+  const adres=document.getElementById('actAdres').value;
+  const postcode=document.getElementById('actPostcode').value;
+  const woon=document.getElementById('actWoonplaats').value;
+  const tel=document.getElementById('actTelefoon').value;
+  const id=Date.now();
+  const act={id,naam,prijs,start,eind,notitie,adres,postcode,woon,tel};
+  activiteiten.push(act);
+  renderOverzicht();
+  clearActiviteitFields();
+  updateDetail();
+}
+
+function renderOverzicht(){
+  const container=document.getElementById('overzichtActiviteiten');
+  container.innerHTML='';
+  activiteiten.forEach(act=>{
+    const div=document.createElement('div'); div.className='overview-item';
+    div.innerHTML=`<span>${act.naam} ${act.start?act.start+' - '+act.eind:''}</span><span>€ ${act.prijs.toFixed(2)}</span>
+      <span class="edit-remove">
+        <button class="btn-small" onclick="editActiviteit(${act.id})">Edit</button>
+        <button class="btn-small" onclick="removeActiviteit(${act.id})">Remove</button>
+      </span>`;
+    container.appendChild(div);
+  });
+  updateDetail();
+}
+
+function clearActiviteitFields(){
+  ['actNaam','actPrijs','actAdres','actPostcode','actWoonplaats','actTelefoon','actStarttijd','actEindtijd','actNotitie']
+  .forEach(id=>document.getElementById(id).value='');
+}
+
+function editActiviteit(id){
+  const act=activiteiten.find(a=>a.id===id);
+  if(!act) return;
+  document.getElementById('actNaam').value=act.naam;
+  document.getElementById('actPrijs').value=act.prijs;
+  document.getElementById('actStarttijd').value=act.start;
+  document.getElementById('actEindtijd').value=act.eind;
+  document.getElementById('actNotitie').value=act.notitie;
+  document.getElementById('actAdres').value=act.adres;
+  document.getElementById('actPostcode').value=act.postcode;
+  document.getElementById('actWoonplaats').value=act.woon;
+  document.getElementById('actTelefoon').value=act.tel;
+  // Do not remove until remove button clicked
+}
+
+function removeActiviteit(id){
+  aktiviteter=activiteiten.filter(a=>a.id!==id);
+  renderOverzicht();
+}
+
+function saveAlgemeen(){
+  updateDetail();
+}
+function saveVerzamel(){
+  updateDetail();
+}
+
+// Drag & Drop deelnemers
+let dragItem=null;
+document.querySelectorAll('.drag-col').forEach(col=>{
+  col.addEventListener('dragover', e=>{e.preventDefault();});
+  col.addEventListener('drop', e=>{
+    e.preventDefault();
+    if(dragItem) col.appendChild(dragItem);
+    updateDetail();
+  });
+});
+function createDeelnemers(){
+  const nietMee=document.getElementById('nietMee');
+  const mee=document.getElementById('mee');
+  const geann=document.getElementById('geannuleerd');
+  deelnemers.forEach(d=>{
+    const div=document.createElement('div'); div.className='drag-item'; div.draggable=true; div.textContent=d;
+    div.addEventListener('dragstart', ()=>dragItem=div);
+    nietMee.appendChild(div);
+  });
+}
+
+function updateDetail(){
+  // Titel
+  document.getElementById('detailTitel').textContent=document.getElementById('titel').value||'Lost';
+  // Buttons
+  document.getElementById('btnInschrijven').textContent='Inschrijven tot '+(document.getElementById('inschrijvenTot').value||'--');
+  document.getElementById('btnAnnuleren').textContent='Annuleren tot '+(document.getElementById('annulerenTot').value||'--');
+  // Verzamelpunt
+  const loc=document.getElementById('verzamelLocatie').value;
+  const tijd=document.getElementById('verzamelTijd').value;
+  const straat=document.getElementById('verzamelStraat').value;
+  const postcode=document.getElementById('verzamelPostcode').value;
+  const woon=document.getElementById('verzamelWoonplaats').value;
+  const tel=document.getElementById('verzamelTelefoon').value;
+  document.getElementById('detailVerzamelPunt').textContent=`Locatie: ${loc}, ${straat} ${postcode}, ${woon} | Tel: ${tel}`;
+  document.getElementById('detailVerzamelTijd').textContent=`Tijd: ${tijd}`;
+  document.getElementById('detailLocatieLink').href=document.getElementById('gmVerzamelLink').value||'#';
+  document.getElementById('detailLocatieLink').textContent='📍 Bekijk locatie in Google Maps';
+  document.getElementById('detailRoute').href=document.getElementById('gmVerzamelLink').value||'#';
+  // Activiteiten
+  const actDiv=document.getElementById('detailActiviteiten'); actDiv.innerHTML='';
+  activiteiten.forEach(act=>{
+    const div=document.createElement('div'); div.className='evenement';
+    div.innerHTML=`<div class="info"><div><img src="https://img.icons8.com/ios-glyphs/24/000000/flag.png"> ${act.naam}</div>
+      ${act.start?'<div>'+act.start+' - '+act.eind+'</div>':''}</div>
+      ${act.prijs>0?'<div class="prijs">€ '+act.prijs.toFixed(2)+' p.p.</div>':''}`;
+    actDiv.appendChild(div);
+  });
+  // Deelnemers mee
+  const meeList=document.getElementById('mee'); let meeText=[]; meeList.querySelectorAll('.drag-item').forEach(d=>meeText.push(d.textContent));
+  document.getElementById('detailDeelnemers').textContent=meeText.join(', ');
+  // Prijs berekenen
+  let totaal=0; activiteiten.forEach(a=>totaal+=a.prijs); document.getElementById('detailPrijs').innerHTML='<strong>€ '+totaal.toFixed(2)+' p.p.</strong>';
+  // Notitie
+  document.getElementById('detailNotitie').textContent=document.getElementById('algNotitie').value;
+}
+
+// PDF upload
+document.getElementById('pdfUpload').addEventListener('change',e=>{
+  const list=document.getElementById('pdfList'); list.innerHTML='';
+  Array.from(e.target.files).forEach(f=>{list.innerHTML+='<div>'+f.name+'</div>';});
+});
+
+// Init
+createDeelnemers();
+updateDetail();
+</script>
+
+</body>
+</html>
