@@ -1,172 +1,144 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8">
-  <title>De Stichting | Ledenlijst</title>
+  <meta charset="utf-8">
+  <title>Admin – Ledenbeheer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-pWUq1eK0pX2s1Y7x9eH+0uqfV3fE3bXYJJV+R4hYQD2Tz2TzX0nUQp2nR8qfqNqfc2Cr3x9q2eGWD+gwYfC2Gg=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f6f8;
-      margin: 0;
-    }
-    header, footer {
-      background-color: #003366;
-      color: white;
-      padding: 15px 30px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .header-buttons button {
-      margin-left: 10px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      padding: 8px 12px;
-      cursor: pointer;
-    }
-    main {
-      padding: 30px;
-    }
-    h1 {
-      color: #003366;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background-color: white;
-    }
-    th, td {
-      padding: 12px;
-      border-bottom: 1px solid #ddd;
-      text-align: left;
-    }
-    th {
-      background-color: #007bff;
-      color: white;
-    }
-    .actions button {
-      margin-right: 5px;
-      background-color: #0056b3;
-      color: white;
-      border: none;
-      padding: 5px 8px;
-      cursor: pointer;
-    }
-    .tooltip {
-      position: relative;
-      display: inline-block;
-      cursor: help;
-    }
-    .tooltip .tooltiptext {
-      visibility: hidden;
-      width: 200px;
-      background-color: #333;
-      color: #fff;
-      text-align: left;
-      border-radius: 5px;
-      padding: 8px;
-      position: absolute;
-      z-index: 1;
-      top: 125%;
-      left: 50%;
-      transform: translateX(-50%);
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    .tooltip:hover .tooltiptext {
-      visibility: visible;
-      opacity: 1;
-    }
-    footer {
-      font-size: 14px;
-    }
+    body {margin:0;font-family:'Roboto Mono',monospace;background:#f6f7f9;color:#111827;display:flex;flex-direction:column;min-height:100vh;}
+    header,footer {background:#fff;padding:16px 20px;border-bottom:1px solid #e5e7eb;}
+    footer {border-top:1px solid #e5e7eb;font-size:13px;color:#6b7280;text-align:center;}
+    main {flex:1;padding:20px;}
+    .card {background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:16px;}
+    h1 {font-size:24px;margin:0 0 12px;}
+    .toolbar {display:flex;gap:10px;margin-bottom:12px;align-items:center;}
+    .btn-back, .btn-new {display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:8px;font-size:13px;text-decoration:none;}
+    .btn-back {background:#fff;color:#6b7280;border:1px solid #6b7280;}
+    .btn-new {background:#eef2ff;color:#3730a3;font-weight:700;}
+    input {flex:1;padding:6px 10px;border:1px solid #e5e7eb;border-radius:8px;font-size:13px;}
+    table {width:100%;border-collapse:collapse;table-layout:fixed;}
+    th,td {text-align:left;border-bottom:1px solid #e5e7eb;padding:6px 8px;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;height:32px;}
+    th {background:#fafafa;}
+    .actions {display:flex;gap:6px;}
+    .action-btn {display:inline-flex;align-items:center;justify-content:center;padding:6px;border-radius:6px;background:#eef2ff;color:#3730a3;width:28px;height:28px;text-decoration:none;font-size:14px;}
+    .channel {position:relative;}
+    .channel-menu {position:absolute;top:100%;left:0;min-width:140px;background:#fff;border:1px solid #e5e7eb;border-radius:8px;box-shadow:0 6px 16px rgba(0,0,0,.08);display:none;z-index:10;}
+    .channel.open .channel-menu {display:block;}
+    .channel-menu a {display:block;padding:8px 10px;font-size:13px;color:#111827;text-decoration:none;}
+    .channel-menu a:hover {background:#f3f4f6;}
+    .muted {color:#6b7280;font-size:13px;}
   </style>
 </head>
 <body>
-
-<header>
-  <div><strong>De Stichting</strong> | Admin Dashboard</div>
-  <div class="header-buttons">
-    <button>Frontend</button>
-    <button>Uitloggen</button>
-  </div>
-</header>
-
-<main>
-  <h1>Ledenlijst</h1>
-  <table>
-    <thead>
-      <tr>
-        <th>Achternaam</th>
-        <th>Voornaam</th>
-        <th>Telefoon</th>
-        <th>Email</th>
-        <th>Geslacht</th>
-        <th>Actief</th>
-        <th>Bijzonderheden</th>
-        <th>Acties</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Fictieve leden -->
-      <tr>
-        <td>Jansen</td><td>Marieke</td><td>0612345678</td><td>marieke.jansen@example.nl</td><td>♀</td><td>✔</td>
-        <td><div class="tooltip">❓<span class="tooltiptext">Vegetarisch, reist vaak met OV</span></div></td>
-        <td class="actions"><button>Bewerk</button><button>Verwijder</button></td>
-      </tr>
-      <tr>
-        <td>De Vries</td><td>Tom</td><td>0623456789</td><td>tom.vries@example.nl</td><td>♂</td><td>✔</td>
-        <td><div class="tooltip">❓<span class="tooltiptext">Allergie voor noten</span></div></td>
-        <td class="actions"><button>Bewerk</button><button>Verwijder</button></td>
-      </tr>
-      <tr>
-        <td>Bakker</td><td>Sophie</td><td>0634567890</td><td>sophie.bakker@example.nl</td><td>♀</td><td>✖</td>
-        <td><div class="tooltip">❓<span class="tooltiptext">Tijdelijk in het buitenland</span></div></td>
-        <td class="actions"><button>Bewerk</button><button>Verwijder</button></td>
-      </tr>
-      <tr>
-        <td>Meijer</td><td>Lucas</td><td>0645678901</td><td>lucas.meijer@example.nl</td><td>♂</td><td>✔</td>
-        <td><div class="tooltip">❓<span class="tooltiptext">Heeft EHBO-certificaat</span></div></td>
-        <td class="actions"><button>Bewerk</button><button>Verwijder</button></td>
-      </tr>
-      <tr>
-        <td>Visser</td><td>Emma</td><td>0656789012</td><td>emma.visser@example.nl</td><td>♀</td><td>✔</td>
-        <td><div class="tooltip">❓<span class="tooltiptext">Doet vrijwilligerswerk</span></div></td>
-        <td class="actions"><button>Bewerk</button><button>Verwijder</button></td>
-      </tr>
-      <tr>
-        <td>Mulder</td><td>Ruben</td><td>0667890123</td><td>ruben.mulder@example.nl</td><td>♂</td><td>✖</td>
-        <td><div class="tooltip">❓<span class="tooltiptext">Opzegging per 1 juli</span></div></td>
-        <td class="actions"><button>Bewerk</button><button>Verwijder</button></td>
-      </tr>
-      <tr>
-        <td>De Boer</td><td>Lotte</td><td>0678901234</td><td>lotte.boer@example.nl</td><td>♀</td><td>✔</td>
-        <td><div class="tooltip">❓<span class="tooltiptext">Heeft dieetwensen</span></div></td>
-        <td class="actions"><button>Bewerk</button><button>Verwijder</button></td>
-      </tr>
-      <tr>
-        <td>Smits</td><td>David</td><td>0689012345</td><td>david.smits@example.nl</td><td>♂</td><td>✔</td>
-        <td><div class="tooltip">❓<span class="tooltiptext">Kan helpen met vervoer</span></div></td>
-        <td class="actions"><button>Bewerk</button><button>Verwijder</button></td>
-      </tr>
-      <tr>
-        <td>Kuipers</td><td>Eva</td><td>0690123456</td><td>eva.kuipers@example.nl</td><td>♀</td><td>✔</td>
-        <td><div class="tooltip">❓<span class="tooltiptext">Heeft voorkeur voor ochtendactiviteiten</span></div></td>
-        <td class="actions"><button>Bewerk</button><button>Verwijder</button></td>
-      </tr>
-      <tr>
-        <td>Willems</td><td>Mark</td><td>0601234567</td><td>mark.willems@example.nl</td><td>♂</td><td>✔</td>
-        <td><div class="tooltip">❓<span class="tooltiptext">Is bestuurslid</span></div></td>
-        <td class="actions"><button>Bewerk</button><button>Verwijder</button></td>
-      </tr>
-    </tbody>
-  </table>
-</main>
-
-<footer>
-  © 2023 De Stichting | <a href="#" style="color:white;">Algemene Voorwaarden</a>
-</footer>
-
+  <header>
+    <div style="font-size:28px;font-weight:700;color:#0d6efd;">De Stichting</div>
+    <div style="font-size:14px;color:#6b7280;">Admin – Ledenbeheer</div>
+  </header>
+  <main>
+    <section class="card">
+      <h1>Ledenlijst</h1>
+      <div class="toolbar">
+        <a href="javascript:history.back()" class="btn-back"><i class="fas fa-arrow-left"></i> Terug</a>
+        <input type="text" placeholder="Zoek op naam, e-mail of telefoon">
+        <a href="#" class="btn-new"><i class="fas fa-user-plus"></i> Nieuw lid</a>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Naam</th><th>Username</th><th>E-mail</th><th>Telefoon</th><th>Bijzonderheden</th><th>Admin</th><th>Geslacht</th><th>Acties</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Buuren, Marcel van</td><td>marcel</td><td>marcel@example.com</td><td>0612345678</td>
+            <td title="Geen"><i class="fas fa-info-circle"></i></td><td><i class="fas fa-check"></i></td><td title="Man"><i class="fas fa-mars"></i></td>
+            <td>
+              <div class="actions">
+                <a href="#" class="action-btn" title="Bewerken"><i class="fas fa-edit"></i></a>
+                <a href="#" class="action-btn channel" onclick="this.classList.toggle('open');return false;" title="Uitnodigen/Reset"><i class="fas fa-envelope-open-text"></i>
+                  <div class="channel-menu"><a href="#">Per e-mail</a><a href="#">Via WhatsApp</a></div>
+                </a>
+                <a href="#" class="action-btn" title="Verwijderen"><i class="fas fa-trash"></i></a>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Jonkers, Eva</td><td>eva.j</td><td>eva@example.com</td><td>0687654321</td>
+            <td title="Vegetarisch"><i class="fas fa-info-circle"></i></td><td></td><td title="Vrouw"><i class="fas fa-venus"></i></td>
+            <td>
+              <div class="actions">
+                <a href="#" class="action-btn" title="Bewerken"><i class="fas fa-edit"></i></a>
+                <a href="#" class="action-btn channel" onclick="this.classList.toggle('open');return false;" title="Uitnodigen/Reset"><i class="fas fa-envelope-open-text"></i>
+                  <div class="channel-menu"><a href="#">Per e-mail</a><a href="#">Via WhatsApp</a></div>
+                </a>
+                <a href="#" class="action-btn" title="Verwijderen"><i class="fas fa-trash"></i></a>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Janssen, Jantje</td><td>jantje</td><td>jantje@example.com</td><td>0611000100</td>
+            <td title="Zwemles"><i class="fas fa-info-circle"></i></td><td></td><td title="Man"><i class="fas fa-mars"></i></td>
+            <td>
+              <div class="actions">
+                <a href="#" class="action-btn" title="Bewerken"><i class="fas fa-edit"></i></a>
+                <a href="#" class="action-btn channel" onclick="this.classList.toggle('open');return false;" title="Uitnodigen/Reset"><i class="fas fa-envelope-open-text"></i>
+                  <div class="channel-menu"><a href="#">Per e-mail</a><a href="#">Via WhatsApp</a></div>
+                </a>
+                <a href="#" class="action-btn" title="Verwijderen"><i class="fas fa-trash"></i></a>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Pietersen, Pietje</td><td>pietje</td><td>pietje@example.com</td><td>0611000200</td>
+            <td title="Glutenvrij"><i class="fas fa-info-circle"></i></td><td></td><td title="Man"><i class="fas fa-mars"></i></td>
+            <td>
+              <div class="actions">
+                <a href="#" class="action-btn" title="Bewerken"><i class="fas fa-edit"></i></a>
+                <a href="#" class="action-btn channel" onclick="this.classList.toggle('open');return false;" title="Uitnodigen/Reset"><i class="fas fa-envelope-open-text"></i>
+                  <div class="channel-menu"><a href="#">Per e-mail</a><a href="#">Via WhatsApp</a></div>
+                </a>
+                <a href="#" class="action-btn" title="Verwijderen"><i class="fas fa-trash"></i></a>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>Klaassen, Klaasje</td><td>klaasje</td><td>klaasje@example.com</td><td>0611000300</td>
+            <td title="Geen"><i class="fas fa-info-circle"></i></td><td></td><td title="Vrouw"><i class="fas fa-venus"></i></td>
+            <td>
+              <div class="actions">
+                <a href="#" class="action-btn" title="Bewerken"><i class="fas fa-edit"></i></a>
+                <a href="#" class="action-btn channel" onclick="this.classList.toggle('open');return false;" title="Uitnodigen/Reset"><i class="fas fa-envelope-open-text"></i>
+                  <div class="channel-menu"><a href="#">Per e-mail</a><a href="#">Via WhatsApp</a></div>
+                </a>
+                <a href="#" class="action-btn" title="Verwijderen"><i class="fas fa-trash"></i></a>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    <section class="card muted">
+      ✉️ Klik op het envelop-icoon om een lid uit te nodigen of wachtwoord te resetten.<br>
+      Kies e-mail of WhatsApp. Admin-reset is direct; anders volgt verificatie.
+    </section>
+  </main>
+  <footer>
+    © 2025 De Stichting | <a href="uploads/voorwaarden.pdf" target="_blank">Algemene Voorwaarden</a>
+  </footer>
+  <script>
+    document.addEventListener('click', e => {
+      document.querySelectorAll('.channel.open').forEach(btn => {
+        if (!btn.contains(e.target)) btn.classList.remove('open');
+      });
+    });
+  </script>
 </body>
 </html>
+```
