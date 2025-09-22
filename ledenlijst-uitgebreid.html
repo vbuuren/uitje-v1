@@ -1,0 +1,581 @@
+<!-- ledenlijst-uitgebreid.html -->
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>De Stichting | Ledenlijst</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f8;
+      overflow: hidden;
+    }
+    header, footer {
+      position: fixed;
+      left: 0;
+      right: 0;
+      background-color: #003366;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+    }
+    header {
+      top: 0;
+    }
+    footer {
+      bottom: 0;
+      font-size: 14px;
+    }
+    footer a {
+      color: white;
+      text-decoration: underline;
+    }
+    .header-buttons button {
+      margin-left: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+    .content {
+      position: absolute;
+      top: 70px;
+      bottom: 50px;
+      left: 0;
+      right: 0;
+      overflow-y: auto;
+      padding: 30px;
+    }
+    h1 {
+      color: #003366;
+      margin-bottom: 10px;
+    }
+    .top-controls {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .top-controls input {
+      padding: 8px;
+      width: 250px;
+    }
+    .top-controls button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+    #new-member-form {
+      display: none;
+      margin-bottom: 20px;
+      background-color: #e9ecef;
+      padding: 15px;
+      border-radius: 5px;
+    }
+    #new-member-form input, #new-member-form select {
+      margin: 5px 0;
+      padding: 6px;
+      width: 100%;
+    }
+    #new-member-form button {
+      margin-top: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+    }
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+    .actions {
+      display: flex;
+      gap: 8px;
+    }
+    .action-btn {
+      color: #003366;
+      text-decoration: none;
+      font-size: 16px;
+      position: relative;
+    }
+    .action-btn:hover {
+      color: #007bff;
+    }
+    .channel-menu {
+      display: none;
+      position: absolute;
+      top: 25px;
+      left: 0;
+      background-color: white;
+      border: 1px solid #ccc;
+      padding: 5px;
+      z-index: 10;
+      white-space: nowrap;
+    }
+    .channel.open .channel-menu {
+      display: block;
+    }
+    .card.muted {
+      margin-top: 20px;
+      background-color: #e9ecef;
+      padding: 15px;
+      border-radius: 5px;
+      font-size: 14px;
+      color: #333;
+    }
+    .export-menu {
+      margin-top: 20px;
+    }
+    .export-menu button {
+      background-color: #17a2b8;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    #export-options button {
+      background-color: #6c757d;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      margin-right: 5px;
+      cursor: pointer;
+    }
+    #export-options.open {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div><strong>De Stichting</strong> | Admin Dashboard</div>
+  <div class="header-buttons">
+    <button>Frontend</button>
+    <button>Uitloggen</button>
+  </div>
+</header>
+
+<div class="content">
+  <h1>Ledenlijst</h1>
+  <div class="top-controls">
+    <input type="text" placeholder="Zoek op naam of email...">
+    <button onclick="document.getElementById('new-member-form').style.display='block';">Nieuw lid</button>
+  </div>
+
+  <div id="new-member-form">
+    <input type="text" id="voornaam" placeholder="Voornaam">
+    <input type="text" id="tussenvoegsel" placeholder="Tussenvoegsel (optioneel)">
+    <input type="text" id="achternaam" placeholder="Achternaam">
+    <input type="text" id="username" placeholder="Username">
+    <input type="email" id="email" placeholder="E-mail">
+    <input type="text" id="telefoon" placeholder="Telefoon">
+    <input type="text" id="bijzonderheden" placeholder="Bijzonderheden">
+    <select id="admin">
+      <option value="">Admin?</option>
+      <option value="Ja">Ja</option>
+      <option value="Nee">Nee</option>
+    </select>
+    <select id="geslacht">
+      <option value="">Geslacht</option>
+      <option value="Man">Man</option>
+      <option value="Vrouw">Vrouw</option>
+    </select>
+    <button onclick="addMember()">Opslaan</button>
+  </div>
+
+  <table id="leden-tabel">
+    <thead>
+      <tr>
+        <th>Naam</th><th>Username</th><th>E-mail</th><th>Telefoon</th><th>Bijzonderheden</th><th>Admin</th><th>Geslacht</th><th>Acties</th>
+      </tr>
+    </thead>
+        <tbody>
+      <tr>
+        <td>Buuren, Marcel van</td>
+        <td>marcel</td>
+        <td>marcel@example.com</td>
+        <td>0612345678</td>
+        <td>Geen</td>
+        <td><i class="fas fa-check"></i></td>
+        <td><i class="fas fa-mars"></i></td>
+        <td>
+          <div class="actions">
+            <a href="#" class="action-btn" title="Bewerken" onclick="editMember(this)"><i class="fas fa-edit"></i></a>
+            <a href="#" class="action-btn channel" onclick="this.classList.toggle('open'); return false;" title="Uitnodigen/Reset">
+              <i class="fas fa-envelope-open-text"></i>
+              <div class="channel-menu">
+                <a href="#" onclick="resetViaMail('marcel@example.com'); return false;">Per e-mail</a>
+                <a href="#" onclick="resetViaWhatsApp('0612345678','Marcel van Buuren'); return false;">Via WhatsApp</a>
+              </div>
+            </a>
+            <a href="#" class="action-btn" title="Verwijderen" onclick="confirmDelete(this)"><i class="fas fa-trash"></i></a>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>Jonkers, Eva</td>
+        <td>eva.j</td>
+        <td>eva@example.com</td>
+        <td>0687654321</td>
+        <td>Vegetarisch</td>
+        <td></td>
+        <td><i class="fas fa-venus"></i></td>
+        <td>
+          <div class="actions">
+            <a href="#" class="action-btn" title="Bewerken" onclick="editMember(this)"><i class="fas fa-edit"></i></a>
+            <a href="#" class="action-btn channel" onclick="this.classList.toggle('open'); return false;" title="Uitnodigen/Reset">
+              <i class="fas fa-envelope-open-text"></i>
+              <div class="channel-menu">
+                <a href="#" onclick="resetViaMail('eva@example.com'); return false;">Per e-mail</a>
+                <a href="#" onclick="resetViaWhatsApp('0687654321','Eva Jonkers'); return false;">Via WhatsApp</a>
+              </div>
+            </a>
+            <a href="#" class="action-btn" title="Verwijderen" onclick="confirmDelete(this)"><i class="fas fa-trash"></i></a>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>Janssen, Jantje</td>
+        <td>jantje</td>
+        <td>jantje@example.com</td>
+        <td>0611000100</td>
+        <td>Zwemles</td>
+        <td></td>
+        <td><i class="fas fa-mars"></i></td>
+        <td>
+          <div class="actions">
+            <a href="#" class="action-btn" title="Bewerken" onclick="editMember(this)"><i class="fas fa-edit"></i></a>
+            <a href="#" class="action-btn channel" onclick="this.classList.toggle('open'); return false;" title="Uitnodigen/Reset">
+              <i class="fas fa-envelope-open-text"></i>
+              <div class="channel-menu">
+                <a href="#" onclick="resetViaMail('jantje@example.com'); return false;">Per e-mail</a>
+                <a href="#" onclick="resetViaWhatsApp('0611000100','Jantje Janssen'); return false;">Via WhatsApp</a>
+              </div>
+            </a>
+            <a href="#" class="action-btn" title="Verwijderen" onclick="confirmDelete(this)"><i class="fas fa-trash"></i></a>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>Pietersen, Pietje</td>
+        <td>pietje</td>
+        <td>pietje@example.com</td>
+        <td>0611000200</td>
+        <td>Glutenvrij</td>
+        <td></td>
+        <td><i class="fas fa-mars"></i></td>
+        <td>
+          <div class="actions">
+            <a href="#" class="action-btn" title="Bewerken" onclick="editMember(this)"><i class="fas fa-edit"></i></a>
+            <a href="#" class="action-btn channel" onclick="this.classList.toggle('open'); return false;" title="Uitnodigen/Reset">
+              <i class="fas fa-envelope-open-text"></i>
+              <div class="channel-menu">
+                <a href="#" onclick="resetViaMail('pietje@example.com'); return false;">Per e-mail</a>
+                <a href="#" onclick="resetViaWhatsApp('0611000200','Pietje Pietersen'); return false;">Via WhatsApp</a>
+              </div>
+            </a>
+            <a href="#" class="action-btn" title="Verwijderen" onclick="confirmDelete(this)"><i class="fas fa-trash"></i></a>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>Klaassen, Klaasje</td>
+        <td>klaasje</td>
+        <td>klaasje@example.com</td>
+        <td>0611000300</td>
+        <td>Geen</td>
+        <td></td>
+        <td><i class="fas fa-venus"></i></td>
+        <td>
+          <div class="actions">
+            <a href="#" class="action-btn" title="Bewerken" onclick="editMember(this)"><i class="fas fa-edit"></i></a>
+            <a href="#" class="action-btn channel" onclick="this.classList.toggle('open'); return false;" title="Uitnodigen/Reset">
+              <i class="fas fa-envelope-open-text"></i>
+              <div class="channel-menu">
+                <a href="#" onclick="resetViaMail('klaasje@example.com'); return false;">Per e-mail</a>
+                <a href="#" onclick="resetViaWhatsApp('0611000300','Klaasje Klaassen'); return false;">Via WhatsApp</a>
+              </div>
+            </a>
+            <a href="#" class="action-btn" title="Verwijderen" onclick="confirmDelete(this)"><i class="fas fa-trash"></i></a>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>Visser, Vincent</td>
+        <td>vincent</td>
+        <td>vincent@example.com</td>
+        <td>0611000400</td>
+        <td>Diabetes</td>
+        <td><i class="fas fa-check"></i></td>
+        <td><i class="fas fa-mars"></i></td>
+        <td>
+          <div class="actions">
+            <a href="#" class="action-btn" title="Bewerken" onclick="editMember(this)"><i class="fas fa-edit"></i></a>
+            <a href="#" class="action-btn channel" onclick="this.classList.toggle('open'); return false;" title="Uitnodigen/Reset">
+              <i class="fas fa-envelope-open-text"></i>
+              <div class="channel-menu">
+                <a href="#" onclick="resetViaMail('vincent@example.com'); return false;">Per e-mail</a>
+                <a href="#" onclick="resetViaWhatsApp('0611000400','Vincent Visser'); return false;">Via WhatsApp</a>
+              </div>
+            </a>
+            <a href="#" class="action-btn" title="Verwijderen" onclick="confirmDelete(this)"><i class="fas fa-trash"></i></a>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>Meijer, Marloes</td>
+        <td>marloes</td>
+        <td>marloes@example.com</td>
+        <td>0611000500</td>
+        <td>Lactose-intolerant</td>
+        <td></td>
+        <td><i class="fas fa-venus"></i></td>
+        <td>
+          <div class="actions">
+            <a href="#" class="action-btn" title="Bewerken" onclick="editMember(this)"><i class="fas fa-edit"></i></a>
+            <a href="#" class="action-btn channel" onclick="this.classList.toggle('open'); return false;" title="Uitnodigen/Reset">
+              <i class="fas fa-envelope-open-text"></i>
+              <div class="channel-menu">
+                <a href="#" onclick="resetViaMail('marloes@example.com'); return false;">Per e-mail</a>
+                <a href="#" onclick="resetViaWhatsApp('0611000500','Marloes Meijer'); return false;">Via WhatsApp</a>
+              </div>
+            </a>
+            <a href="#" class="action-btn" title="Verwijderen" onclick="confirmDelete(this)"><i class="fas fa-trash"></i></a>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>de Vries, Thomas de</td>
+        <td>thomasdv</td>
+        <td>thomas@example.com</td>
+        <td>0611000600</td>
+        <td>Veganist</td>
+        <td></td>
+        <td><i class="fas fa-mars"></i></td>
+        <td>
+          <div class="actions">
+            <a href="#" class="action-btn" title="Bewerken" onclick="editMember(this)"><i class="fas fa-edit"></i></a>
+            <a href="#" class="action-btn channel" onclick="this.classList.toggle('open'); return false;" title="Uitnodigen/Reset">
+              <i class="fas fa-envelope-open-text"></i>
+              <div class="channel-menu">
+                <a href="#" onclick="resetViaMail('thomas@example.com'); return false;">Per e-mail</a>
+                <a href="#" onclick="resetViaWhatsApp('0611000600','Thomas de Vries'); return false;">Via WhatsApp</a>
+              </div>
+            </a>
+            <a href="#" class="action-btn" title="Verwijderen" onclick="confirmDelete(this)"><i class="fas fa-trash"></i></a>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>Linden, Sophie van der</td>
+        <td>sophie.l</td>
+        <td>sophie@example.com</td>
+        <td>0611000700</td>
+        <td>Notenallergie</td>
+        <td><i class="fas fa-check"></i></td>
+        <td><i class="fas fa-venus"></i></td>
+        <td>
+          <div class="actions">
+            <a href="#" class="action-btn" title="Bewerken" onclick="editMember(this)"><i class="fas fa-edit"></i></a>
+            <a href="#" class="action-btn channel" onclick="this.classList.toggle('open'); return false;" title="Uitnodigen/Reset">
+              <i class="fas fa-envelope-open-text"></i>
+              <div class="channel-menu">
+                <a href="#" onclick="resetViaMail('sophie@example.com'); return false;">Per e-mail</a>
+                <a href="#" onclick="resetViaWhatsApp('0611000700','Sophie van der Linden'); return false;">Via WhatsApp</a>
+              </div>
+            </a>
+            <a href="#" class="action-btn" title="Verwijderen" onclick="confirmDelete(this)"><i class="fas fa-trash"></i></a>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>de Groot, Bram</td>
+        <td>bram.dg</td>
+        <td>bram@example.com</td>
+        <td>0611000800</td>
+        <td>Astma</td>
+        <td></td>
+        <td><i class="fas fa-mars"></i></td>
+        <td>
+          <div class="actions">
+            <a href="#" class="action-btn" title="Bewerken" onclick="editMember(this)"><i class="fas fa-edit"></i></a>
+            <a href="#" class="action-btn channel" onclick="this.classList.toggle('open'); return false;" title="Uitnodigen/Reset">
+              <i class="fas fa-envelope-open-text"></i>
+              <div class="channel-menu">
+                <a href="#" onclick="resetViaMail('bram@example.com'); return false;">Per e-mail</a>
+                <a href="#" onclick="resetViaWhatsApp('0611000800','Bram de Groot'); return false;">Via WhatsApp</a>
+              </div>
+            </a>
+            <a href="#" class="action-btn" title="Verwijderen" onclick="confirmDelete(this)"><i class="fas fa-trash"></i></a>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <section class="card muted">
+    ✉️ Klik op het envelop-icoon om een lid uit te nodigen of wachtwoord te resetten.<br>
+    Kies e-mail of WhatsApp...
+  </section>
+
+  <div class="export-menu">
+    <button onclick="document.getElementById('export-options').classList.toggle('open');">📤 Exporteren</button>
+    <div id="export-options" style="display: none; margin-top: 10px;">
+      <button onclick="exportCSV()">Als CSV</button>
+      <button onclick="window.print()">Als PDF</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  © 2025 De Stichting | <a href="av.html">Algemene voorwaarden</a>
+</footer>
+
+<script>
+function addMember() {
+  const voornaam = document.getElementById("voornaam").value.trim();
+  const tussenvoegsel = document.getElementById("tussenvoegsel").value.trim();
+  const achternaam = document.getElementById("achternaam").value.trim();
+  const username = document.getElementById("username").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const telefoon = document.getElementById("telefoon").value.trim();
+  const bijzonderheden = document.getElementById("bijzonderheden").value.trim();
+  const admin = document.getElementById("admin").value;
+  const geslacht = document.getElementById("geslacht").value;
+
+  if (!voornaam || !achternaam) {
+    alert("Voornaam en achternaam zijn verplicht.");
+    return;
+  }
+  if (!email && !telefoon) {
+    alert("Vul minimaal e-mailadres of telefoonnummer in.");
+    return;
+  }
+  if (!username) {
+    alert("Username is verplicht.");
+    return;
+  }
+
+  const naam = `${achternaam}, ${voornaam}${tussenvoegsel ? ' ' + tussenvoegsel : ''}`;
+  const tbody = document.querySelector("#leden-tabel tbody");
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td>${naam}</td>
+    <td>${username}</td>
+    <td>${email}</td>
+    <td>${telefoon}</td>
+    <td>${bijzonderheden}</td>
+    <td>${admin === "Ja" ? '<i class="fas fa-check"></i>' : ''}</td>
+    <td>${geslacht === "Vrouw" ? '<i class="fas fa-venus"></i>' : geslacht === "Man" ? '<i class="fas fa-mars"></i>' : ''}</td>
+    <td>
+      <div class="actions">
+        <a href="#" class="action-btn" title="Bewerken" onclick="editMember(this)"><i class="fas fa-edit"></i></a>
+        <a href="#" class="action-btn channel" onclick="this.classList.toggle('open'); return false;" title="Uitnodigen/Reset">
+          <i class="fas fa-envelope-open-text"></i>
+          <div class="channel-menu">
+            <a href="#" onclick="resetViaMail('${email}'); return false;">Per e-mail</a>
+            <a href="#" onclick="resetViaWhatsApp('${telefoon}','${naam}'); return false;">Via WhatsApp</a>
+          </div>
+        </a>
+        <a href="#" class="action-btn" title="Verwijderen" onclick="confirmDelete(this)"><i class="fas fa-trash"></i></a>
+      </div>
+    </td>
+  `;
+  tbody.appendChild(tr);
+  document.getElementById("new-member-form").style.display = "none";
+  // reset form fields
+  ["voornaam","tussenvoegsel","achternaam","username","email","telefoon","bijzonderheden"].forEach(id => document.getElementById(id).value = "");
+  document.getElementById("admin").value = "";
+  document.getElementById("geslacht").value = "";
+}
+
+function editMember(el) {
+  const row = el.closest("tr");
+  const cells = row.querySelectorAll("td");
+  const naamParts = cells[0].innerText.split(", ");
+  const achternaam = naamParts[0];
+  const voorEnTuss = naamParts[1].split(" ");
+  const voornaam = voorEnTuss.shift();
+  const tussenvoegsel = voorEnTuss.join(" ");
+
+  document.getElementById("voornaam").value = voornaam;
+  document.getElementById("tussenvoegsel").value = tussenvoegsel;
+  document.getElementById("achternaam").value = achternaam;
+  document.getElementById("username").value = cells[1].innerText;
+  document.getElementById("email").value = cells[2].innerText;
+  document.getElementById("telefoon").value = cells[3].innerText;
+  document.getElementById("bijzonderheden").value = cells[4].innerText;
+  document.getElementById("admin").value = cells[5].innerText ? "Ja" : "Nee";
+  document.getElementById("geslacht").value = cells[6].title;
+  document.getElementById("new-member-form").style.display = "block";
+  row.remove();
+}
+
+function confirmDelete(el) {
+  if (confirm("Weet je zeker dat je dit lid wilt verwijderen?")) {
+    el.closest("tr").remove();
+  }
+}
+
+function resetViaMail(email) {
+  if (!email) {
+    alert("Geen e-mailadres beschikbaar voor dit lid.");
+    return;
+  }
+  window.location.href = `mailto:${email}?subject=Reset&body=Je wachtwoord is gereset.`;
+}
+
+function resetViaWhatsApp(telefoon, naam) {
+  if (!telefoon) {
+    alert("Geen telefoonnummer beschikbaar voor dit lid.");
+    return;
+  }
+  const nummer = telefoon.replace(/^0/, "31");
+  const bericht = `Hallo ${naam}, je uitnodiging staat klaar.`;
+  window.open(`https://wa.me/${nummer}?text=${encodeURIComponent(bericht)}`, "_blank");
+}
+
+function exportCSV() {
+  const rows = [["Naam","Username","E-mail","Telefoon","Bijzonderheden","Admin","Geslacht"]];
+  document.querySelectorAll("#leden-tabel tbody tr").forEach(tr => {
+    const cells = tr.querySelectorAll("td");
+    rows.push([
+      cells[0].innerText,
+      cells[1].innerText,
+      cells[2].innerText,
+      cells[3].innerText,
+      cells[4].innerText,
+      cells[5].innerText ? "Ja" : "Nee",
+      cells[6].title || ""
+    ]);
+  });
+  const csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(";")).join("\n");
+  const link = document.createElement("a");
+  link.setAttribute("href", encodeURI(csvContent));
+  link.setAttribute("download", "ledenlijst.csv");
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+</script>
+
