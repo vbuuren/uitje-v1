@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>De Stichting | Ledenlijst</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+    }
+    header, footer {
+      background-color: #003366;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header-buttons button {
+      margin-left: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+    main {
+      padding: 30px;
+    }
+    h1 {
+      color: #003366;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+    }
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+    .actions button {
+      margin-right: 5px;
+      background-color: #0056b3;
+      color: white;
+      border: none;
+      padding: 5px 8px;
+      cursor: pointer;
+    }
+    .tooltip {
+      position: relative;
+      display: inline-block;
+      cursor: help;
+    }
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 200px;
+      background-color: #333;
+      color: #fff;
+      text-align: left;
+      border-radius: 5px;
+      padding: 8px;
+      position: absolute;
+      z-index: 1;
+      top: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+    footer {
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div><strong>De Stichting</strong> | Admin Dashboard</div>
+  <div class="header-buttons">
+    <button>Frontend</button>
+    <button>Uitloggen</button>
+  </div>
+</header>
+
+<main>
+  <h1>Ledenlijst</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Achternaam</th>
+        <th>Voornaam</th>
+        <th>Telefoon</th>
+        <th>Email</th>
+        <th>Geslacht</th>
+        <th>Actief</th>
+        <th>Bijzonderheden</th>
+        <th>Acties</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Fictieve leden -->
+      <tr>
+        <td>Jansen</td><td>Marieke</td><td>0612345678</td><td>marieke.jansen@example.nl</td><td>♀</td><td>✔</td>
+        <td><div class="tooltip">❓<span class="tooltiptext">Vegetarisch, reist vaak met OV</span></div></td>
+        <td class="actions"><button>Bewerk</button><button>Verwijder</button></td>
+      </tr>
+      <tr>
+        <td>De Vries</td><td>Tom</td><td>0623456789</td><td>tom.vries@example.nl</td><td>♂</td><td>✔</td>
+        <td><div class="tooltip">❓<span class="tooltiptext">Allergie voor noten</span></div></td>
+        <td class="actions"><button>Bewerk</button><button>Verwijder</button></td>
+      </tr>
+      <tr>
+        <td>Bakker</td><td>Sophie</td><td>0634567890</td><td>sophie.bakker@example.nl</td><td>♀</td><td>✖</td>
+        <td><div class="tooltip">❓<span class="tooltiptext">Tijdelijk in het buitenland</span></div></td>
+        <td class="actions"><button>Bewerk</button><button>Verwijder</button></td>
+      </tr>
+      <tr>
+        <td>Meijer</td><td>Lucas</td><td>0645678901</td><td>lucas.meijer@example.nl</td><td>♂</td><td>✔</td>
+        <td><div class="tooltip">❓<span class="tooltiptext">Heeft EHBO-certificaat</span></div></td>
+        <td class="actions"><button>Bewerk</button><button>Verwijder</button></td>
+      </tr>
+      <tr>
+        <td>Visser</td><td>Emma</td><td>0656789012</td><td>emma.visser@example.nl</td><td>♀</td><td>✔</td>
+        <td><div class="tooltip">❓<span class="tooltiptext">Doet vrijwilligerswerk</span></div></td>
+        <td class="actions"><button>Bewerk</button><button>Verwijder</button></td>
+      </tr>
+      <tr>
+        <td>Mulder</td><td>Ruben</td><td>0667890123</td><td>ruben.mulder@example.nl</td><td>♂</td><td>✖</td>
+        <td><div class="tooltip">❓<span class="tooltiptext">Opzegging per 1 juli</span></div></td>
+        <td class="actions"><button>Bewerk</button><button>Verwijder</button></td>
+      </tr>
+      <tr>
+        <td>De Boer</td><td>Lotte</td><td>0678901234</td><td>lotte.boer@example.nl</td><td>♀</td><td>✔</td>
+        <td><div class="tooltip">❓<span class="tooltiptext">Heeft dieetwensen</span></div></td>
+        <td class="actions"><button>Bewerk</button><button>Verwijder</button></td>
+      </tr>
+      <tr>
+        <td>Smits</td><td>David</td><td>0689012345</td><td>david.smits@example.nl</td><td>♂</td><td>✔</td>
+        <td><div class="tooltip">❓<span class="tooltiptext">Kan helpen met vervoer</span></div></td>
+        <td class="actions"><button>Bewerk</button><button>Verwijder</button></td>
+      </tr>
+      <tr>
+        <td>Kuipers</td><td>Eva</td><td>0690123456</td><td>eva.kuipers@example.nl</td><td>♀</td><td>✔</td>
+        <td><div class="tooltip">❓<span class="tooltiptext">Heeft voorkeur voor ochtendactiviteiten</span></div></td>
+        <td class="actions"><button>Bewerk</button><button>Verwijder</button></td>
+      </tr>
+      <tr>
+        <td>Willems</td><td>Mark</td><td>0601234567</td><td>mark.willems@example.nl</td><td>♂</td><td>✔</td>
+        <td><div class="tooltip">❓<span class="tooltiptext">Is bestuurslid</span></div></td>
+        <td class="actions"><button>Bewerk</button><button>Verwijder</button></td>
+      </tr>
+    </tbody>
+  </table>
+</main>
+
+<footer>
+  © 2023 De Stichting | <a href="#" style="color:white;">Algemene Voorwaarden</a>
+</footer>
+
+</body>
+</html>
